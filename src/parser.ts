@@ -79,7 +79,7 @@ export class Parser {
     }
 
     private async getVariableInputs(title: string, variables: Record<string, unknown>) {
-        if (Object.keys(variables).length == 0) {
+        if (Object.keys(variables).length === 0) {
             return {};
         }
 
