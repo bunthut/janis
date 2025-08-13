@@ -99,9 +99,10 @@ joplin.plugins.register({
             if (!event || !event.files) return;
             for (const file of event.files) {
                 const resource: any = await joplin.data.post(["resources"], file);
+                const isImage = resource.mime && resource.mime.startsWith("image/");
                 const note = {
                     title: file.name || "Dropped file",
-                    body: `[](:/${resource.id})`,
+                    body: isImage ? `![](:/${resource.id})` : `[${file.name || "Dropped file"}](:/${resource.id})`,
                 };
                 await joplin.data.post(["notes"], note);
             }
