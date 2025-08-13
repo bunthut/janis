@@ -44,4 +44,5 @@ export default class JoplinData {
     post(path: Path, query?: any, body?: any, files?: any[]): Promise<any>;
     put(path: Path, query?: any, body?: any, files?: any[]): Promise<any>;
     delete(path: Path, query?: any): Promise<any>;
+    resourcePath(id: string): Promise<string>;
 }
