@@ -378,9 +378,12 @@ describe("Template parser", () => {
             errorMessageShown = true;
             return 0;
         });
+        const consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => {});
         const parsedTemplate = await parser.parseTemplate(template);
         expect(errorMessageShown).toBeTruthy();
         expect(parsedTemplate).toBeNull();
+        expect(consoleErrorMock).toHaveBeenCalled();
+        consoleErrorMock.mockRestore();
     });
 
     test("should show an error message if notebook defined in templates_notebook doesn't exist", async () => {
@@ -406,9 +409,12 @@ describe("Template parser", () => {
         jest.spyOn(folderUtils, "doesFolderExist").mockImplementation(async () => {
             return false;
         });
+        const consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => {});
         const parsedTemplate = await parser.parseTemplate(template);
         expect(errorMessageShown).toBeTruthy();
         expect(parsedTemplate).toBeNull();
+        expect(consoleErrorMock).toHaveBeenCalled();
+        consoleErrorMock.mockRestore();
     });
 
     test("should show an error message if an invalid variable name is defined", async () => {
@@ -431,9 +437,12 @@ describe("Template parser", () => {
             expect(message).toContain("Variable name \"invalid@var\" is invalid.");
             return 0;
         });
+        const consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => {});
         const parsedTemplate = await parser.parseTemplate(template);
         expect(errorMessageShown).toBeTruthy();
         expect(parsedTemplate).toBeNull();
+        expect(consoleErrorMock).toHaveBeenCalled();
+        consoleErrorMock.mockRestore();
     });
 
     test("should skip empty values in tags special variable", async () => {
@@ -592,7 +601,7 @@ describe("Template parser", () => {
             errorMessagesShown++;
             return 0;
         });
-
+        const consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => {});
         for (const body of invalidTemplates) {
             await parser.parseTemplate({
                 id: "some-id",
@@ -600,8 +609,9 @@ describe("Template parser", () => {
                 body,
             });
         }
-
         expect(errorMessagesShown).toEqual(invalidTemplates.length);
+        expect(consoleErrorMock).toHaveBeenCalledTimes(invalidTemplates.length);
+        consoleErrorMock.mockRestore();
     });
 
     // Repeat helper.
@@ -701,7 +711,7 @@ describe("Template parser", () => {
             errorMessagesShown++;
             return 0;
         });
-
+        const consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => {});
         for (const body of invalidTemplates) {
             await parser.parseTemplate({
                 id: "some-id",
@@ -709,8 +719,9 @@ describe("Template parser", () => {
                 body,
             });
         }
-
         expect(errorMessagesShown).toEqual(invalidTemplates.length);
+        expect(consoleErrorMock).toHaveBeenCalledTimes(invalidTemplates.length);
+        consoleErrorMock.mockRestore();
     });
 
     // Case helper.
@@ -774,7 +785,7 @@ describe("Template parser", () => {
             errorMessagesShown++;
             return 0;
         });
-
+        const consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => {});
         for (const body of invalidTemplates) {
             await parser.parseTemplate({
                 id: "some-id",
@@ -782,8 +793,9 @@ describe("Template parser", () => {
                 body,
             });
         }
-
         expect(errorMessagesShown).toEqual(invalidTemplates.length);
+        expect(consoleErrorMock).toHaveBeenCalledTimes(invalidTemplates.length);
+        consoleErrorMock.mockRestore();
     });
 
     // Compare helper.
@@ -870,7 +882,7 @@ describe("Template parser", () => {
             errorMessagesShown++;
             return 0;
         });
-
+        const consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => {});
         for (const body of invalidTemplates) {
             await parser.parseTemplate({
                 id: "some-id",
@@ -878,8 +890,9 @@ describe("Template parser", () => {
                 body,
             });
         }
-
         expect(errorMessagesShown).toEqual(invalidTemplates.length);
+        expect(consoleErrorMock).toHaveBeenCalledTimes(invalidTemplates.length);
+        consoleErrorMock.mockRestore();
     });
 
     // Condition helper.
@@ -942,7 +955,7 @@ describe("Template parser", () => {
             errorMessagesShown++;
             return 0;
         });
-
+        const consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => {});
         for (const body of invalidTemplates) {
             await parser.parseTemplate({
                 id: "some-id",
@@ -950,8 +963,9 @@ describe("Template parser", () => {
                 body,
             });
         }
-
         expect(errorMessagesShown).toEqual(invalidTemplates.length);
+        expect(consoleErrorMock).toHaveBeenCalledTimes(invalidTemplates.length);
+        consoleErrorMock.mockRestore();
     });
 
     // Datetime helper.
@@ -1018,16 +1032,17 @@ describe("Template parser", () => {
             errorMessagesShown++;
             return 0;
         });
-
+        const consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => {});
         for (const body of invalidTemplates) {
-            console.log(await parser.parseTemplate({
+            await parser.parseTemplate({
                 id: "some-id",
                 title: "some template",
                 body,
-            }));
+            });
         }
-
         expect(errorMessagesShown).toEqual(invalidTemplates.length);
+        expect(consoleErrorMock).toHaveBeenCalledTimes(invalidTemplates.length);
+        consoleErrorMock.mockRestore();
     });
 
     // template_todo_alarm special variable tests
@@ -1087,10 +1102,11 @@ describe("Template parser", () => {
             errorMessagesShown++;
             return 0;
         });
-
+        const consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => {});
         const parsedTemplate = await parser.parseTemplate(template);
-
         expect(parsedTemplate).toBeNull();
         expect(errorMessagesShown).toEqual(1);
+        expect(consoleErrorMock).toHaveBeenCalled();
+        consoleErrorMock.mockRestore();
     });
 });
