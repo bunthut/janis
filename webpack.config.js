@@ -33,7 +33,7 @@ const manifest = readManifest(manifestPath);
 const pluginArchiveFilePath = path.resolve(publishDir, `${manifest.id}.jpl`);
 const pluginInfoFilePath = path.resolve(publishDir, `${manifest.id}.json`);
 
-function validatePackageJson() {
+const validatePackageJson = () => {
 	const content = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 	if (!content.name || content.name.indexOf('joplin-plugin-') !== 0) {
 		console.warn(chalk.yellow(`WARNING: To publish the plugin, the package name should start with "joplin-plugin-" (found "${content.name}") in ${packageJsonPath}`));
@@ -46,14 +46,14 @@ function validatePackageJson() {
 	if (content.scripts && content.scripts.postinstall) {
 		console.warn(chalk.yellow(`WARNING: package.json contains a "postinstall" script. It is recommended to use a "prepare" script instead so that it is executed before publish. In ${packageJsonPath}`));
 	}
-}
+};
 
-function fileSha256(filePath) {
-	const content = fs.readFileSync(filePath);
-	return crypto.createHash('sha256').update(content).digest('hex');
-}
+const fileSha256 = (filePath) => {
+        const content = fs.readFileSync(filePath);
+        return crypto.createHash('sha256').update(content).digest('hex');
+};
 
-function currentGitInfo() {
+const currentGitInfo = () => {
 	try {
 		let branch = execSync('git rev-parse --abbrev-ref HEAD', { stdio: 'pipe' }).toString().trim();
 		const commit = execSync('git rev-parse HEAD', { stdio: 'pipe' }).toString().trim();
@@ -65,16 +65,16 @@ function currentGitInfo() {
 		console.info(chalk.cyan('Git information will not be stored in plugin info file'));
 		return '';
 	}
-}
+};
 
-function readManifest(manifestPath) {
+const readManifest = (manifestPath) => {
 	const content = fs.readFileSync(manifestPath, 'utf8');
 	const output = JSON.parse(content);
 	if (!output.id) throw new Error(`Manifest plugin ID is not set in ${manifestPath}`);
 	return output;
-}
+};
 
-function createPluginArchive(sourceDir, destPath) {
+const createPluginArchive = (sourceDir, destPath) => {
 	const distFiles = glob.sync(`${sourceDir}/**/*`, { nodir: true })
 		.map(f => f.substr(sourceDir.length + 1));
 
@@ -93,17 +93,17 @@ function createPluginArchive(sourceDir, destPath) {
 	);
 
 	console.info(chalk.cyan(`Plugin archive has been created in ${destPath}`));
-}
+};
 
-function createPluginInfo(manifestPath, destPath, jplFilePath) {
+const createPluginInfo = (manifestPath, destPath, jplFilePath) => {
 	const contentText = fs.readFileSync(manifestPath, 'utf8');
 	const content = JSON.parse(contentText);
 	content._publish_hash = `sha256:${fileSha256(jplFilePath)}`;
 	content._publish_commit = currentGitInfo();
 	fs.writeFileSync(destPath, JSON.stringify(content, null, '\t'), 'utf8');
-}
+};
 
-function onBuildCompleted() {
+const onBuildCompleted = () => {
 	try {
 		fs.removeSync(path.resolve(publishDir, 'index.js'));
 		createPluginArchive(distDir, pluginArchiveFilePath);
@@ -112,7 +112,7 @@ function onBuildCompleted() {
 	} catch (error) {
 		console.error(chalk.red(error.message));
 	}
-}
+};
 
 const baseConfig = {
 	mode: 'production',
@@ -183,7 +183,7 @@ const createArchiveConfig = {
 	plugins: [new WebpackOnBuildPlugin(onBuildCompleted)],
 };
 
-function resolveExtraScriptPath(name) {
+const resolveExtraScriptPath = (name) => {
 	const relativePath = `./src/${name}`;
 
 	const fullPath = path.resolve(`${rootDir}/${relativePath}`);
@@ -203,9 +203,9 @@ function resolveExtraScriptPath(name) {
 			libraryExport: 'default',
 		},
 	};
-}
+};
 
-function buildExtraScriptConfigs(userConfig) {
+const buildExtraScriptConfigs = (userConfig) => {
 	if (!userConfig.extraScripts.length) return [];
 
 	const output = [];
@@ -219,9 +219,9 @@ function buildExtraScriptConfigs(userConfig) {
 	}
 
 	return output;
-}
+};
 
-function main(processArgv) {
+const main = (processArgv) => {
 	const yargs = require('yargs/yargs');
 	const argv = yargs(processArgv).argv;
 
@@ -261,7 +261,7 @@ function main(processArgv) {
 	}
 
 	return configs[configName];
-}
+};
 
 let exportedConfigs = [];
 
