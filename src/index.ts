@@ -18,6 +18,18 @@ import templatesImportModule from "./importModule";
 import { setTimelineView, TimelineNote } from "./views/timeline";
 import { processAttachment } from "./utils/attachmentProcessing";
 
+export const onFileDrop = async (event: any) => {
+    if (!event || !event.files) return;
+    for (const file of event.files) {
+        const resource: any = await joplin.data.post(["resources"], null, file);
+        const note = {
+            title: file.name || "Dropped file",
+            body: `[](:/${resource.id})`,
+        };
+        await joplin.data.post(["notes"], null, note);
+    }
+};
+
 const documentationUrl = "https://github.com/joplin/plugin-templates#readme";
 
 joplin.plugins.register({
@@ -95,17 +107,6 @@ joplin.plugins.register({
 
         // File drop handling
         let fileDropListener: any = null;
-        const onFileDrop = async (event: any) => {
-            if (!event || !event.files) return;
-            for (const file of event.files) {
-                const resource: any = await joplin.data.post(["resources"], file);
-                const note = {
-                    title: file.name || "Dropped file",
-                    body: `[](:/${resource.id})`,
-                };
-                await joplin.data.post(["notes"], note);
-            }
-        };
 
         // Enable file drop by default so that dropped files create new notes automatically
         fileDropListener = await (joplin.workspace as any).on("fileDrop", onFileDrop);
