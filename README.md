@@ -15,9 +15,12 @@ This plugin allows you to create templates in Joplin and use them to create new 
 - [Installing Plugin](#installing-plugin)
 - [Importing Legacy Templates](#importing-legacy-templates)
 - [Importing Notebin Data](#importing-notebin-data)
+- [Importing Templates from Files](#importing-templates-from-files)
 - [Using the Template Plugin](#using-the-template-plugin)
   - [Adding a new template](#adding-a-new-template)
   - [Using templates](#using-templates)
+  - [File drop](#file-drop)
+  - [Timeline view](#timeline-view)
 - [Features](#features)
   - [Template variables](#template-variables)
     - [Built in variables](#built-in-variables)
@@ -26,6 +29,7 @@ This plugin allows you to create templates in Joplin and use them to create new 
     - [Special variables](#special-variables)
   - [Default Templates](#default-templates)
   - [Using notebooks to store templates](#using-notebooks-to-store-templates)
+- [Optional Dependencies](#optional-dependencies)
 - [Changelog](#changelog)
 - [Supporting](#supporting)
 - [Contributing](#contributing)
@@ -53,6 +57,13 @@ If you have notes exported from Notebin, they can be brought into Joplin using t
 
 To use the importer, open the Templates menu and choose **Import from Notebin**. Select your JSON file and the plugin will create notes using the provided titles, content and tags. The `tags` field is optional.
 
+## Importing Templates from Files
+Once template file import is available, you will be able to bring existing template files into Joplin:
+
+- Open **Tools > Import > Import template from file**.
+- Choose the Markdown file containing your template.
+- The plugin will create a new template note from the selected file.
+
 ## Using the Template Plugin
 
 ### Adding a new template
@@ -62,6 +73,12 @@ Create templates by creating a new note or to-do in any notebook that:
 
 ### Using templates
 You can access the templates options in `Tools` > `Templates`.
+
+### File drop
+Dropping files onto Joplin will automatically create a new note for each file with the file attached. File drop is enabled by default. Use **Tools > Templates > Toggle file drop** or run the `toggleFileDrop` command to enable or disable this behaviour.
+
+### Timeline view
+To review your notes chronologically, open the timeline via **Tools > Templates > Show timeline** or from the **View** menu. This opens a dialog listing notes ordered by creation date.
 
 # Features
 
@@ -191,6 +208,14 @@ You can define the templates you use the most as default templates. Currently yo
 The plugin also supports using notebooks to store templates instead of tags. You can start using notebooks to store your templates by going to the plugin settings and selecting `Notebook` instead of `Tag`.
 
 Now, any note or todo placed in a notebook titled "Templates" will be considered a template.
+
+## Optional Dependencies
+Attachment processing for dropped files uses optional libraries:
+
+- [`sharp`](https://www.npmjs.com/package/sharp) generates thumbnails for image attachments.
+- [`pdf-parse`](https://www.npmjs.com/package/pdf-parse) extracts preview text from PDF files.
+
+The plugin works without them, but these enhancements will be skipped if the modules are not installed.
 
 ## Changelog
 See [CHANGELOG.md](https://github.com/joplin/plugin-templates/blob/master/CHANGELOG.md).
