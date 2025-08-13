@@ -2,60 +2,60 @@ import { HandlebarsHelper, HelperConstructorBlock } from "./helper";
 import { AttributeValueType, AttributeDefinition, AttributeParser } from "./utils/attributes";
 import * as moment from "moment";
 
-const FORMAT = "format";
-const SET_DATE = "set_date";
-const SET_TIME = "set_time";
-const DELTA_YEARS = "delta_years";
-const DELTA_MONTHS = "delta_months";
-const DELTA_DAYS = "delta_days";
-const DELTA_HOURS = "delta_hours";
-const DELTA_MINUTES = "delta_minutes";
-const DELTA_SECONDS = "delta_seconds";
+const format = "format";
+const setDate = "set_date";
+const setTime = "set_time";
+const deltaYears = "delta_years";
+const deltaMonths = "delta_months";
+const deltaDays = "delta_days";
+const deltaHours = "delta_hours";
+const deltaMinutes = "delta_minutes";
+const deltaSeconds = "delta_seconds";
 
 export const datetimeHelper: HelperConstructorBlock = (ctx) => {
     const schema: AttributeDefinition[] = [
         {
-            name: FORMAT,
+            name: format,
             valueType: AttributeValueType.String,
             defaultValue: ctx.dateAndTimeUtils.getDateTimeFormat()
         },
         {
-            name: SET_DATE,
+            name: setDate,
             valueType: AttributeValueType.String,
             defaultValue: ""
         },
         {
-            name: SET_TIME,
+            name: setTime,
             valueType: AttributeValueType.String,
             defaultValue: ""
         },
         {
-            name: DELTA_YEARS,
+            name: deltaYears,
             valueType: AttributeValueType.Number,
             defaultValue: 0
         },
         {
-            name: DELTA_MONTHS,
+            name: deltaMonths,
             valueType: AttributeValueType.Number,
             defaultValue: 0
         },
         {
-            name: DELTA_DAYS,
+            name: deltaDays,
             valueType: AttributeValueType.Number,
             defaultValue: 0
         },
         {
-            name: DELTA_HOURS,
+            name: deltaHours,
             valueType: AttributeValueType.Number,
             defaultValue: 0
         },
         {
-            name: DELTA_MINUTES,
+            name: deltaMinutes,
             valueType: AttributeValueType.Number,
             defaultValue: 0
         },
         {
-            name: DELTA_SECONDS,
+            name: deltaSeconds,
             valueType: AttributeValueType.Number,
             defaultValue: 0
         }
@@ -67,28 +67,28 @@ export const datetimeHelper: HelperConstructorBlock = (ctx) => {
 
         const now = moment(new Date().getTime());
 
-        if (attrs[SET_DATE]) {
-            const parsedDate = ctx.dateAndTimeUtils.parseDate(attrs[SET_DATE] as string, ctx.dateAndTimeUtils.getDateFormat());
+        if (attrs[setDate]) {
+            const parsedDate = ctx.dateAndTimeUtils.parseDate(attrs[setDate] as string, ctx.dateAndTimeUtils.getDateFormat());
             now.set("date", parsedDate.date);
             now.set("month", parsedDate.month);
             now.set("year", parsedDate.year);
         }
 
-        if (attrs[SET_TIME]) {
-            const parsedTime = ctx.dateAndTimeUtils.parseTime(attrs[SET_TIME] as string, ctx.dateAndTimeUtils.getTimeFormat());
+        if (attrs[setTime]) {
+            const parsedTime = ctx.dateAndTimeUtils.parseTime(attrs[setTime] as string, ctx.dateAndTimeUtils.getTimeFormat());
             now.set("hours", parsedTime.hours);
             now.set("minutes", parsedTime.minutes);
             now.set("seconds", parsedTime.seconds);
             now.set("milliseconds", 0);
         }
 
-        now.add(attrs[DELTA_YEARS] as number, "years");
-        now.add(attrs[DELTA_MONTHS] as number, "months");
-        now.add(attrs[DELTA_DAYS] as number, "days");
-        now.add(attrs[DELTA_HOURS] as number, "hours");
-        now.add(attrs[DELTA_MINUTES] as number, "minutes");
-        now.add(attrs[DELTA_SECONDS] as number, "seconds");
+        now.add(attrs[deltaYears] as number, "years");
+        now.add(attrs[deltaMonths] as number, "months");
+        now.add(attrs[deltaDays] as number, "days");
+        now.add(attrs[deltaHours] as number, "hours");
+        now.add(attrs[deltaMinutes] as number, "minutes");
+        now.add(attrs[deltaSeconds] as number, "seconds");
 
-        return ctx.dateAndTimeUtils.formatMsToLocal(now.toDate().getTime(), attrs[FORMAT] as string);
+        return ctx.dateAndTimeUtils.formatMsToLocal(now.toDate().getTime(), attrs[format] as string);
     });
 };

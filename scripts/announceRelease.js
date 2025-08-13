@@ -3,18 +3,18 @@ require("dotenv").config()
 const fs = require("fs-extra");
 const axios = require("axios").default;
 
-const PACKAGE_JSON_PATH = "./package.json";
-const CHANGELOG_PATH = "./CHANGELOG.md";
+const packageJsonPath = "./package.json";
+const changelogPath = "./CHANGELOG.md";
 
-const GITHUB_ACCESS_TOKEN = process.env.GITHUB_ACCESS_TOKEN;
-const DISCOURSE_API_KEY = process.env.DISCOURSE_API_KEY;
-const DISCOURSE_URL = "https://discourse.joplinapp.org";
-const TEMPLATE_PLUGIN_TOPIC_ID = 17470;
-const PLUGIN_REPO = "https://www.github.com/joplin/plugin-templates";
+const githubAccessToken = process.env.GITHUB_ACCESS_TOKEN;
+const discourseApiKey = process.env.DISCOURSE_API_KEY;
+const discourseUrl = "https://discourse.joplinapp.org";
+const templatePluginTopicId = 17470;
+const pluginRepo = "https://www.github.com/joplin/plugin-templates";
 
 const getLatestRelease = async () => {
-    const version = JSON.parse(await fs.readFile(PACKAGE_JSON_PATH, "utf-8")).version;
-    const changelog = await fs.readFile(CHANGELOG_PATH, "utf-8");
+    const version = JSON.parse(await fs.readFile(packageJsonPath, "utf-8")).version;
+    const changelog = await fs.readFile(changelogPath, "utf-8");
 
     const releaseHeadings = changelog.match(/###? \[.*/gm);
 
@@ -32,18 +32,18 @@ const getLatestRelease = async () => {
 }
 
 const createGithubRelease = async (release) => {
-    const tag_name = `v${release.version}`;
+    const tagName = `v${release.version}`;
 
     const response = await axios.post(
         "https://api.github.com/repos/joplin/plugin-templates/releases",
         {
-            tag_name: tag_name,
-            name: tag_name,
+            tag_name: tagName,
+            name: tagName,
             body: release.changelog
         },
         {
             headers: {
-                "Authorization": `Token ${GITHUB_ACCESS_TOKEN}`
+                "Authorization": `Token ${githubAccessToken}`
             }
         });
 
@@ -51,23 +51,23 @@ const createGithubRelease = async (release) => {
 }
 
 const createJoplinReleasePost = async (release) => {
-    const postContent = `## Release v${release.version} :rocket:\n${release.changelog}\n\n> For reporting bugs/feature-requests or to know more about the plugin visit the [GitHub Repo](${PLUGIN_REPO}).`;
+    const postContent = `## Release v${release.version} :rocket:\n${release.changelog}\n\n> For reporting bugs/feature-requests or to know more about the plugin visit the [GitHub Repo](${pluginRepo}).`;
 
     const response = await axios.post(
-        `${DISCOURSE_URL}/posts.json`,
+        `${discourseUrl}/posts.json`,
         {
-            topic_id: `${TEMPLATE_PLUGIN_TOPIC_ID}`,
+            topic_id: `${templatePluginTopicId}`,
             raw: postContent
         },
         {
             headers: {
-                "Api-Key": DISCOURSE_API_KEY,
+                "Api-Key": discourseApiKey,
                 "Api-Username": "nishantwrp"
             }
         }
     );
 
-    return `${DISCOURSE_URL}/t/${TEMPLATE_PLUGIN_TOPIC_ID}/${response.data.post_number}`;
+    return `${discourseUrl}/t/${templatePluginTopicId}/${response.data.post_number}`;
 }
 
 const announceRelease = async () => {

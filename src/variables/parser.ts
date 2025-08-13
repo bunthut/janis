@@ -9,7 +9,7 @@ import { TimeCustomVariable } from "./types/time";
 
 // NOTE - InvalidCustomVariable should be at the last of the list
 // because it accepts any definition.
-const VARIABLE_TYPES = [
+const variableTypes = [
     TextCustomVariable,
     NumberCustomVariable,
     BooleanCustomVariable,
@@ -20,7 +20,7 @@ const VARIABLE_TYPES = [
 ];
 
 export const getVariableFromDefinition = (name: string, definition: unknown): CustomVariable => {
-    for (const variableType of VARIABLE_TYPES) {
+    for (const variableType of variableTypes) {
         try {
             const variable = variableType.createFromDefinition(name, definition);
             return variable;
