@@ -107,6 +107,9 @@ joplin.plugins.register({
             }
         };
 
+        // Enable file drop by default so that dropped files create new notes automatically
+        fileDropListener = await (joplin.workspace as any).on("fileDrop", onFileDrop);
+
         // Register all commands
         const joplinCommands = new PromiseGroup();
 
