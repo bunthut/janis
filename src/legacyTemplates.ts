@@ -3,7 +3,7 @@ import { DateAndTimeUtils } from "./utils/dateAndTime";
 import { createFolder } from "./utils/folders";
 import { applyTagToNote, getAnyTagWithTitle } from "./utils/tags";
 
-const README_BODY = (
+const readmeBody = (
     `**✅ Legacy Templates successfully imported!**
 
  Quick tips for the Templates Plugin:
@@ -54,6 +54,6 @@ export const loadLegacyTemplates = async (dateAndTimeUtils: DateAndTimeUtils, pr
     }
 
     if (folderId) {
-        await joplin.data.post(["notes"], null, { title: "README", body: README_BODY, parent_id: folderId });
+        await joplin.data.post(["notes"], null, { title: "README", body: readmeBody, parent_id: folderId });
     }
 }
