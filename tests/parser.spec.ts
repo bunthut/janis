@@ -1,7 +1,7 @@
 import joplin from "api";
 
-import * as assert from "assert"
-import * as dedent from "dedent";
+import assert from "assert";
+import dedent from "dedent";
 
 import { DateAndTimeUtils } from "@templates/utils/dateAndTime";
 import { Logger } from "@templates/logger";
@@ -60,7 +60,7 @@ describe("Template parser", () => {
     };
 
     beforeAll(() => {
-        jest.useFakeTimers("modern");
+        jest.useFakeTimers();
         jest.setSystemTime(testTime);
     });
 

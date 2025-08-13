@@ -1,4 +1,4 @@
-import * as moment from "moment";
+import moment from "moment";
 
 // These are meant to parse the date and time formats
 // supported by Joplin. It doesn't support seconds or
