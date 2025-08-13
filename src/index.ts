@@ -333,6 +333,12 @@ joplin.plugins.register({
             },
         ], MenuItemLocation.Tools);
 
+        await joplin.views.menuItems.create(
+            "showTimelineView",
+            "showTimeline",
+            MenuItemLocation.View
+        );
+
         await joplinCommands.groupAll();
 
 
