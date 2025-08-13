@@ -234,10 +234,10 @@ const buildExtraScriptConfigs = (userConfig) => {
 
 const main = (processArgv) => {
 	const yargs = require('yargs/yargs');
-	const argv = yargs(processArgv).argv;
+        const argv = yargs(processArgv).argv;
 
-	const configName = argv['joplin-plugin-config'];
-	if (!configName) throw new Error('A config file must be specified via the --joplin-plugin-config flag');
+        const configName = argv['joplin-plugin-config'] || process.env.JOPLIN_PLUGIN_CONFIG;
+        if (!configName) throw new Error('A config file must be specified via the --joplin-plugin-config flag or JOPLIN_PLUGIN_CONFIG environment variable');
 
 	// Webpack configurations run in parallel, while we need them to run in
 	// sequence, and to do that it seems the only way is to run webpack multiple
