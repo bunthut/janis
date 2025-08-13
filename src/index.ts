@@ -16,6 +16,7 @@ import { LocaleGlobalSetting, DateFormatGlobalSetting, TimeFormatGlobalSetting, 
 import { DefaultTemplatesConfig } from "./settings/defaultTemplatesConfig";
 import templatesImportModule from "./importModule";
 import { setTimelineView, TimelineNote } from "./views/timeline";
+import { processAttachment } from "./utils/attachmentProcessing";
 
 const documentationUrl = "https://github.com/joplin/plugin-templates#readme";
 
@@ -307,6 +308,24 @@ joplin.plugins.register({
                 }
             }
         }));
+
+
+        // Attachment processing for dropped resources
+        const processedResources = new Set<string>();
+        await joplin.workspace.onNoteChange(async ({ id, event }) => {
+            if (event === 1 || event === 2) {
+                const note: any = await joplin.data.get(["notes", id], { fields: ["body"] });
+                const resourceRegex = /\(:\/([0-9a-fA-F]{32})\)/g;
+                let match: RegExpExecArray | null;
+                while ((match = resourceRegex.exec(note.body)) !== null) {
+                    const resourceId = match[1];
+                    if (!processedResources.has(resourceId)) {
+                        await processAttachment(resourceId, id);
+                        processedResources.add(resourceId);
+                    }
+                }
+            }
+        });
 
 
         // Create templates menu
