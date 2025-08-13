@@ -9,28 +9,43 @@ describe("onFileDrop", () => {
         jest.resetAllMocks();
     });
 
-    test("creates a resource and note for dropped files", async () => {
-        const file = { name: "test.txt" } as any;
+    test("creates resources and notes for all dropped files in parallel", async () => {
+        const files = [{ name: "test1.txt" } as any, { name: "test2.txt" } as any];
         const selectedFolderMock = jest.fn().mockResolvedValue({ id: "folder1" });
         (joplin as any).workspace = { selectedFolder: selectedFolderMock } as any;
-        const postMock = jest.spyOn(joplin.data, "post").mockImplementation(async (path: string[], data: any) => {
+
+        const resourceResolvers: Array<() => void> = [];
+        const postMock = jest.spyOn(joplin.data, "post").mockImplementation((path: string[], data: any) => {
             if (path[0] === "resources") {
-                return { id: "res1" };
+                return new Promise(resolve => {
+                    const index = resourceResolvers.length + 1;
+                    resourceResolvers.push(() => resolve({ id: `res${index}` }));
+                });
             }
             if (path[0] === "notes") {
-                return { id: "note1" };
+                return Promise.resolve({ id: `note-${data.title}` });
             }
-            return {};
+            return Promise.resolve({});
         });
 
-        await onFileDrop({ files: [file] });
+        const dropPromise = onFileDrop({ files });
 
+        await Promise.resolve();
         expect(selectedFolderMock).toHaveBeenCalledTimes(1);
-        expect(postMock).toHaveBeenCalledTimes(2);
-        expect(postMock).toHaveBeenCalledWith(["resources"], file);
+        expect(postMock.mock.calls.filter(call => call[0][0] === "resources").length).toBe(2);
+
+        for (const resolve of resourceResolvers) resolve();
+        await dropPromise;
+
+        expect(postMock.mock.calls.filter(call => call[0][0] === "notes").length).toBe(2);
         expect(postMock).toHaveBeenCalledWith(["notes"], {
-            title: "test.txt",
+            title: "test1.txt",
             body: "[](:/res1)",
+            parent_id: "folder1",
+        });
+        expect(postMock).toHaveBeenCalledWith(["notes"], {
+            title: "test2.txt",
+            body: "[](:/res2)",
             parent_id: "folder1",
         });
     });
