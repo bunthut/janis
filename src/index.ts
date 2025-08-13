@@ -1,5 +1,5 @@
 import joplin from "api";
-import { MenuItemLocation } from "api/types";
+import { MenuItemLocation, Disposable } from "api/types";
 import { Parser } from "./parser";
 import { DateAndTimeUtils } from "./utils/dateAndTime";
 import { getFolderFromId, getSelectedFolder, getUserFolderSelection, Folder } from "./utils/folders";
@@ -18,7 +18,7 @@ import templatesImportModule from "./importModule";
 import { setTimelineView, TimelineNote } from "./views/timeline";
 import { processAttachment } from "./utils/attachmentProcessing";
 
-export const onFileDrop = async (event: any) => {
+export const onFileDrop = async (event: { files: any[] } | null) => {
     try {
         if (!event || !event.files) return;
 
@@ -44,6 +44,17 @@ export const onFileDrop = async (event: any) => {
         const logger = new Logger(profileDir);
         await logger.log(`onFileDrop error: ${error}`);
     }
+};
+
+    }
+};
+
+export const initializeFileDrop = async (): Promise<Disposable | null> => {
+    if (joplin.workspace?.onFileDrop) {
+        return await joplin.workspace.onFileDrop(onFileDrop);
+    }
+    await joplin.views.dialogs.showMessageBox("File drop is not supported in this version of Joplin.");
+    return null;
 };
 
 const documentationUrl = "https://github.com/joplin/plugin-templates#readme";
@@ -122,10 +133,10 @@ joplin.plugins.register({
 
 
         // File drop handling
-        let fileDropListener: any = null;
+        let fileDropListener: Disposable | null = null;
 
         // Enable file drop by default so that dropped files create new notes automatically
-        fileDropListener = await (joplin.workspace as any).on("fileDrop", onFileDrop);
+        fileDropListener = await initializeFileDrop();
 
         // Register all commands
         const joplinCommands = new PromiseGroup();
@@ -323,8 +334,10 @@ joplin.plugins.register({
                     fileDropListener = null;
                     await joplin.views.dialogs.showMessageBox("File drop disabled");
                 } else {
-                    fileDropListener = await (joplin.workspace as any).on("fileDrop", onFileDrop);
-                    await joplin.views.dialogs.showMessageBox("File drop enabled");
+                    fileDropListener = await initializeFileDrop();
+                    if (fileDropListener) {
+                        await joplin.views.dialogs.showMessageBox("File drop enabled");
+                    }
                 }
             }
         }));

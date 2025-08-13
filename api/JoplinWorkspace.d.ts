@@ -12,8 +12,12 @@ interface ItemChangeEvent {
 interface SyncStartEvent {
     withErrors: boolean;
 }
+interface FileDropEvent {
+    files: any[];
+}
 declare type ItemChangeHandler = (event: ItemChangeEvent)=> void;
 declare type SyncStartHandler = (event: SyncStartEvent)=> void;
+declare type FileDropHandler = (event: FileDropEvent)=> void;
 /**
  * The workspace service provides access to all the parts of Joplin that
  * are being worked on - i.e. the currently selected notes or notebooks as
@@ -50,6 +54,10 @@ export default class JoplinWorkspace {
      * Called when the synchronisation process has finished.
      */
     onSyncComplete(callback: Function): Promise<Disposable>;
+    /**
+     * Called when files are dropped into the application.
+     */
+    onFileDrop?(handler: FileDropHandler): Promise<Disposable>;
     /**
      * Gets the currently selected note
      */
