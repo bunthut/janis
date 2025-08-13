@@ -1,5 +1,5 @@
 import joplin from "api";
-import { onFileDrop } from "../src/index";
+import { onFileDrop, initializeFileDrop } from "../src/index";
 
 describe("onFileDrop", () => {
     test("creates a resource and note for dropped files", async () => {
@@ -26,5 +26,28 @@ describe("onFileDrop", () => {
             body: "[](:/res1)",
             parent_id: "folder1",
         });
+    });
+});
+
+describe("initializeFileDrop", () => {
+    test("subscribes to workspace.onFileDrop when available", async () => {
+        const disposable = { dispose: jest.fn() } as any;
+        const onFileDropMock = jest.fn().mockResolvedValue(disposable);
+        (joplin as any).workspace = { onFileDrop: onFileDropMock } as any;
+
+        const result = await initializeFileDrop();
+
+        expect(onFileDropMock).toHaveBeenCalledWith(onFileDrop);
+        expect(result).toBe(disposable);
+    });
+
+    test("shows warning when onFileDrop is unavailable", async () => {
+        (joplin as any).workspace = {} as any;
+        const messageMock = jest.spyOn(joplin.views.dialogs, "showMessageBox").mockResolvedValue(0);
+
+        const result = await initializeFileDrop();
+
+        expect(result).toBeNull();
+        expect(messageMock).toHaveBeenCalled();
     });
 });
