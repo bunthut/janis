@@ -47,7 +47,7 @@ export const onFileDrop = async (event: { files: any[] } | null) => {
 };
 
 export const initializeFileDrop = async (): Promise<Disposable | null> => {
-    if (joplin.workspace?.onFileDrop) {
+    if (joplin.workspace && joplin.workspace.onFileDrop) {
         return await joplin.workspace.onFileDrop(onFileDrop);
     }
     await joplin.views.dialogs.showMessageBox("File drop is not supported in this version of Joplin.");
