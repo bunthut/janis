@@ -1,6 +1,6 @@
 import { HandlebarsHelper, HelperConstructorBlock } from "./helper";
 import { AttributeValueType, AttributeDefinition, AttributeParser } from "./utils/attributes";
-import * as moment from "moment";
+import moment from "moment";
 
 const format = "format";
 const setDate = "set_date";

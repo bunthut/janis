@@ -11,7 +11,16 @@ const crypto = require('crypto');
 const fs = require('fs-extra');
 const chalk = require('chalk');
 const CopyPlugin = require('copy-webpack-plugin');
-const WebpackOnBuildPlugin = require('on-build-webpack');
+
+class WebpackOnBuildPlugin {
+        constructor(callback) {
+                this.callback = callback;
+        }
+
+        apply(compiler) {
+                compiler.hooks.done.tap('WebpackOnBuildPlugin', this.callback);
+        }
+}
 const tar = require('tar');
 const glob = require('glob');
 const execSync = require('child_process').execSync;
@@ -185,13 +194,18 @@ const extraScriptConfig = Object.assign({}, baseConfig, {
 });
 
 const createArchiveConfig = {
-	stats: 'errors-only',
-	entry: './dist/index.js',
-	output: {
-		filename: 'index.js',
-		path: publishDir,
-	},
-	plugins: [new WebpackOnBuildPlugin(onBuildCompleted)],
+        stats: 'errors-only',
+        mode: 'production',
+        target: 'node',
+        entry: './dist/index.js',
+        output: {
+                filename: 'index.js',
+                path: publishDir,
+        },
+        plugins: [new WebpackOnBuildPlugin(onBuildCompleted)],
+        resolve: {
+                fallback: { path: false, os: false },
+        },
 };
 
 const resolveExtraScriptPath = (name) => {

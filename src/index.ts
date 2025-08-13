@@ -8,7 +8,7 @@ import { getTemplateFromId, getUserTemplateSelection, Note } from "./utils/templ
 import { setDefaultTemplatesView, DefaultTemplatesDisplayData, NotebookDefaultTemplatesDisplayData } from "./views/defaultTemplates";
 import { TemplateAction, performAction } from "./actions";
 import { loadLegacyTemplates } from "./legacyTemplates";
-import * as open from "open";
+import open from "open";
 import { Logger } from "./logger";
 import { PromiseGroup } from "./utils/promises";
 import { PluginSettingsRegistry, DefaultNoteTemplateIdSetting, DefaultTodoTemplateIdSetting, DefaultTemplatesConfigSetting } from "./settings";
