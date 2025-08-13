@@ -67,12 +67,18 @@ const currentGitInfo = () => {
 	}
 };
 
-const readManifest = (manifestPath) => {
-	const content = fs.readFileSync(manifestPath, 'utf8');
-	const output = JSON.parse(content);
-	if (!output.id) throw new Error(`Manifest plugin ID is not set in ${manifestPath}`);
-	return output;
-};
+/**
+ * Reads and validates the plugin manifest.
+ *
+ * Throws a descriptive error if the manifest file is missing, contains invalid JSON,
+ * or does not include the required `id` field.
+ */
+function readManifest(manifestPath) {
+        const content = fs.readFileSync(manifestPath, 'utf8');
+        const output = JSON.parse(content);
+        if (!output.id) throw new Error(`Manifest plugin ID is not set in ${manifestPath}`);
+        return output;
+}
 
 const createPluginArchive = (sourceDir, destPath) => {
 	const distFiles = glob.sync(`${sourceDir}/**/*`, { nodir: true })
