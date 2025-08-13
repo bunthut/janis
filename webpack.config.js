@@ -67,6 +67,17 @@ const currentGitInfo = () => {
 	}
 };
 
+/**
+ * Reads and validates the plugin manifest.
+ *
+ * This function checks for the presence of the manifest file, ensures that it contains valid JSON,
+ * and verifies that the required `id` field is included. If any of these conditions are not met,
+ * the function will throw a descriptive error to inform the user of the specific issue.
+ *
+ * @throws {Error} Throws an error if the manifest file is missing, contains invalid JSON,
+ *                 or does not include the required `id` field.
+ */
+
 function readManifest(manifestPath) {
         const content = fs.readFileSync(manifestPath, 'utf8');
         const output = JSON.parse(content);
