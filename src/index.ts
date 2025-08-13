@@ -11,12 +11,14 @@ import { loadLegacyTemplates } from "./legacyTemplates";
 import open from "open";
 import { Logger } from "./logger";
 import { PromiseGroup, NamedPromiseGroup } from "./utils/promises";
-import { PluginSettingsRegistry, DefaultNoteTemplateIdSetting, DefaultTodoTemplateIdSetting, DefaultTemplatesConfigSetting } from "./settings";
+import { PluginSettingsRegistry, DefaultNoteTemplateIdSetting, DefaultTodoTemplateIdSetting, DefaultTemplatesConfigSetting, TemplatesSourceSetting } from "./settings";
 import { LocaleGlobalSetting, DateFormatGlobalSetting, TimeFormatGlobalSetting, ProfileDirGlobalSetting } from "./settings/global";
 import { DefaultTemplatesConfig } from "./settings/defaultTemplatesConfig";
 import templatesImportModule from "./importModule";
 import { setTimelineView, TimelineNote } from "./views/timeline";
 import { processAttachment } from "./utils/attachmentProcessing";
+import { TemplatesSource } from "./settings/templatesSource";
+import { applyTagToNote, getAnyTagWithTitle } from "./utils/tags";
 
 export const onFileDrop = async (event: { files: any[] } | null) => {
     try {
@@ -52,6 +54,37 @@ export const initializeFileDrop = async (): Promise<Disposable | null> => {
     }
     await joplin.views.dialogs.showMessageBox("File drop is not supported in this version of Joplin.");
     return null;
+};
+
+export const importTemplateFromFile = async (): Promise<void> => {
+    const electron = joplin.require("electron");
+    const fs = joplin.require("fs-extra");
+    const path = joplin.require("path");
+
+    const { canceled, filePaths } = await electron.remote.dialog.showOpenDialog({
+        properties: ["openFile"],
+    });
+
+    if (canceled || !filePaths || filePaths.length === 0) return;
+
+    try {
+        const filePath = filePaths[0];
+        const raw = await fs.readFile(filePath, "utf8");
+        const firstLineIndex = raw.indexOf("\n");
+        const title = firstLineIndex >= 0
+            ? raw.slice(0, firstLineIndex).trim() || path.basename(filePath, path.extname(filePath))
+            : path.basename(filePath, path.extname(filePath));
+        const body = firstLineIndex >= 0 ? raw.slice(firstLineIndex + 1) : raw;
+
+        const note: any = await joplin.data.post(["notes"], null, { title, body });
+
+        if (await TemplatesSourceSetting.get() === TemplatesSource.Tag) {
+            const tagId = (await getAnyTagWithTitle("template")).id;
+            await applyTagToNote(tagId, note.id);
+        }
+    } catch (error) {
+        await joplin.views.dialogs.showMessageBox(`Failed to import template: ${error}`);
+    }
 };
 
 const documentationUrl = "https://github.com/joplin/plugin-templates#readme";
@@ -277,15 +310,7 @@ joplin.plugins.register({
         joplinCommands.add(joplin.commands.register({
             name: "importTemplateFromFile",
             label: "Import template from file",
-            execute: async () => {
-                const electron = joplin.require("electron");
-                const { canceled, filePaths } = await electron.remote.dialog.showOpenDialog({
-                    properties: ["openFile"],
-                });
-                if (!canceled && filePaths && filePaths.length > 0) {
-                    await joplin.views.dialogs.showMessageBox(`Selected file: ${filePaths[0]}`);
-                }
-            }
+            execute: importTemplateFromFile,
         }));
 
         joplinCommands.add(joplin.commands.register({
