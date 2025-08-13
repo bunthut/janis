@@ -33,7 +33,7 @@ export async function processAttachment(resourceId: string, noteId: string): Pro
             }
 
             const resourcePath: string = await joplin.data.resourcePath(resourceId);
-            const dataBuffer = fs.readFileSync(resourcePath);
+            const dataBuffer = await fs.promises.readFile(resourcePath);
             const pdfData = await pdfParse(dataBuffer);
             const sentences = pdfData.text.replace(/\s+/g, " ").split(/(?<=[.!?])\s+/).slice(0, 2).join(" ");
             const note: any = await joplin.data.get(["notes", noteId], { fields: ["id", "body"] });

@@ -22,6 +22,10 @@ export default {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Old code before rule was applied
         post: async (path: string[], query: unknown, body: unknown): Promise<unknown> => { return {}; },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Old code before rule was applied
+        get: async (path: string[], query: unknown): Promise<unknown> => { return {}; },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Old code before rule was applied
+        put: async (path: string[], query: unknown, body: unknown): Promise<unknown> => { return {}; },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Old code before rule was applied
         resourcePath: async (id: string): Promise<string> => { return ""; },
     },
     plugins: {
