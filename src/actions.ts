@@ -25,10 +25,15 @@ const performInsertTextAction = async (template: NewNote) => {
 
 const performNewNoteAction = async (template: NewNote, isTodo: 0 | 1) => {
     const folderId = template.folder ? template.folder : await getSelectedFolder();
-    const notePayload = { body: template.body, parent_id: folderId, title: template.title, is_todo: isTodo };
+    if (!folderId) {
+        await joplin.views.dialogs.showMessageBox("Please select a notebook first.");
+        return;
+    }
+
+    const notePayload: { body: string; parent_id: string; title: string; is_todo: 0 | 1; todo_due?: number | null } = { body: template.body, parent_id: folderId, title: template.title, is_todo: isTodo };
 
     if (isTodo && template.todo_due) {
-        notePayload["todo_due"] = template.todo_due;
+        notePayload.todo_due = template.todo_due;
     }
 
     const note = await joplin.data.post(["notes"], null, notePayload);

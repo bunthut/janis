@@ -234,6 +234,10 @@ joplin.plugins.register({
 
                 const defaultTemplatesConfig = await DefaultTemplatesConfigSetting.get();
                 const currentFolderId = await getSelectedFolder();
+                if (currentFolderId === null) {
+                    await joplin.views.dialogs.showMessageBox("Please select a notebook to use default templates.");
+                    return;
+                }
 
                 if (currentFolderId in defaultTemplatesConfig) {
                     defaultTemplate = await getTemplateFromId(defaultTemplatesConfig[currentFolderId].defaultNoteTemplateId);
@@ -258,6 +262,10 @@ joplin.plugins.register({
 
                 const defaultTemplatesConfig = await DefaultTemplatesConfigSetting.get();
                 const currentFolderId = await getSelectedFolder();
+                if (currentFolderId === null) {
+                    await joplin.views.dialogs.showMessageBox("Please select a notebook to use default templates.");
+                    return;
+                }
 
                 if (currentFolderId in defaultTemplatesConfig) {
                     defaultTemplate = await getTemplateFromId(defaultTemplatesConfig[currentFolderId].defaultTodoTemplateId);
