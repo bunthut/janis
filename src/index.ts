@@ -46,9 +46,6 @@ export const onFileDrop = async (event: { files: any[] } | null) => {
     }
 };
 
-    }
-};
-
 export const initializeFileDrop = async (): Promise<Disposable | null> => {
     if (joplin.workspace?.onFileDrop) {
         return await joplin.workspace.onFileDrop(onFileDrop);
