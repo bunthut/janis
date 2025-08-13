@@ -36,3 +36,18 @@ input, select {
     max-height: 80vh;
     overflow: scroll;
 }
+
+.timeline {
+    list-style: none;
+    padding-left: 0;
+    text-align: left;
+}
+
+.timeline li {
+    margin: 8px 0;
+}
+
+.timeline .date {
+    font-weight: bold;
+    margin-right: 6px;
+}

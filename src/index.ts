@@ -15,6 +15,7 @@ import { PluginSettingsRegistry, DefaultNoteTemplateIdSetting, DefaultTodoTempla
 import { LocaleGlobalSetting, DateFormatGlobalSetting, TimeFormatGlobalSetting, ProfileDirGlobalSetting } from "./settings/global";
 import { DefaultTemplatesConfig } from "./settings/defaultTemplatesConfig";
 import templatesImportModule from "./importModule";
+import { setTimelineView, TimelineNote } from "./views/timeline";
 
 const documentationUrl = "https://github.com/joplin/plugin-templates#readme";
 
@@ -245,6 +246,18 @@ joplin.plugins.register({
         }));
 
         joplinCommands.add(joplin.commands.register({
+            name: "showTimeline",
+            label: "Show timeline",
+            execute: async () => {
+                const response: { items: TimelineNote[] } = await joplin.data.get([
+                    "notes"
+                ], { fields: ["id", "title", "created_time"], order_by: "created_time", order_dir: "ASC" }) as { items: TimelineNote[] };
+                await setTimelineView(dialogViewHandle, response.items);
+                await joplin.views.dialogs.open(dialogViewHandle);
+            }
+        }));
+
+        joplinCommands.add(joplin.commands.register({
             name: "showPluginDocumentation",
             label: "Help",
             execute: async () => {
@@ -288,6 +301,9 @@ joplin.plugins.register({
             {
                 commandName: "insertTemplate",
                 accelerator: "Alt+Ctrl+I"
+            },
+            {
+                commandName: "showTimeline"
             },
             {
                 label: "Default templates",
