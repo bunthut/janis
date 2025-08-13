@@ -97,11 +97,16 @@ joplin.plugins.register({
         let fileDropListener: any = null;
         const onFileDrop = async (event: any) => {
             if (!event || !event.files) return;
+
+            const folder = await joplin.workspace.selectedFolder();
+            if (!folder) return;
+
             for (const file of event.files) {
                 const resource: any = await joplin.data.post(["resources"], file);
                 const note = {
                     title: file.name || "Dropped file",
                     body: `[](:/${resource.id})`,
+                    parent_id: folder.id,
                 };
                 await joplin.data.post(["notes"], note);
             }
