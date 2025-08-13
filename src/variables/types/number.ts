@@ -9,7 +9,7 @@ export class NumberCustomVariable extends CustomVariable {
         return `<input name="${encode(this.name)}" type="number"></input>`;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Old code before rule was applied
     public processInput(input: string, dateAndTimeUtils: DateAndTimeUtils): number {
         return Number.parseFloat(input);
     }

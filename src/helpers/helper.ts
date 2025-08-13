@@ -3,7 +3,7 @@ import { HelperContext } from "./context";
 
 export type HelperConstructorBlock = (ctx: HelperContext) => HandlebarsHelper;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Old code before rule was applied
 type HelperImpl = (...args: Array<any>) => any;
 
 export class HandlebarsHelper {

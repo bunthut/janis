@@ -29,7 +29,7 @@ describe("Template parser", () => {
     const parser = new Parser(dateAndTimeUtils, "variable-dialog", logger);
 
     const testVariableTypes = (variableTypes: { [name: string]: typeof CustomVariable | typeof EnumCustomVariable }, extraValidations?: (varDict: { [name: string]: CustomVariable }) => void) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Old code before rule was applied
         jest.spyOn(templateVariableViews, "setTemplateVariablesView").mockImplementation(async (handle: string, title: string, variableDict: { [name: string]: CustomVariable }) => {
             for (const [name, variable] of Object.entries(variableDict)) {
                 expect(variable instanceof variableTypes[name]).toBeTruthy();
@@ -42,7 +42,7 @@ describe("Template parser", () => {
     };
 
     const handleVariableDialog = (id: "cancel" | "ok", variables: { [name: string]: string }) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Old code before rule was applied
         jest.spyOn(joplin.views.dialogs, "open").mockImplementation(async (handle: string) => {
             if (id === "cancel") {
                 return {

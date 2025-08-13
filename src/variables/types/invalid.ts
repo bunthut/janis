@@ -6,7 +6,7 @@ export class InvalidCustomVariable extends CustomVariable {
         return `<div class="invalidVariable"><i>${encode(this.name)} has an invalid type.</i></div>`;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Old code before rule was applied
     static createFromDefinition(name: string, definition: unknown): CustomVariable {
         return new this(name, name);
     }

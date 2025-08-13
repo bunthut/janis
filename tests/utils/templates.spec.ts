@@ -18,7 +18,7 @@ interface TagData {
 }
 
 describe("Get user template selection", () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Old code before rule was applied
     jest.spyOn(joplin.views.dialogs, "showMessageBox").mockImplementation(async (message: string) => {
         return 0;
     });
@@ -46,7 +46,7 @@ describe("Get user template selection", () => {
     };
 
     const setTemplateTagsAndNotes = (data: TagData[]) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Old code before rule was applied
         jest.spyOn(tagUtils, "getAllTagsWithTitle").mockImplementation(async (title: string) => {
             return data.map(tag => {
                 return {
@@ -66,7 +66,7 @@ describe("Get user template selection", () => {
         });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Old code before rule was applied
     const testExpectedCalls = (mockedFunction: any, expectedCalls: number): void => {
         expect(mockedFunction.mock.calls.length).toBe(expectedCalls);
     }
