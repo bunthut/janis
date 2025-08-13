@@ -19,19 +19,30 @@ import { setTimelineView, TimelineNote } from "./views/timeline";
 import { processAttachment } from "./utils/attachmentProcessing";
 
 export const onFileDrop = async (event: any) => {
-    if (!event || !event.files) return;
+    try {
+        if (!event || !event.files) return;
 
-    const folder = await joplin.workspace.selectedFolder();
-    if (!folder) return;
+        let folder = await joplin.workspace.selectedFolder();
+        if (!folder) {
+            const selected = await getUserFolderSelection();
+            if (!selected) return;
+            folder = JSON.parse(selected);
+        }
 
-    for (const file of event.files) {
-        const resource: any = await joplin.data.post(["resources"], file);
-        const note = {
-            title: file.name || "Dropped file",
-            body: `[](:/${resource.id})`,
-            parent_id: folder.id,
-        };
-        await joplin.data.post(["notes"], note);
+        for (const file of event.files) {
+            const resource: any = await joplin.data.post(["resources"], file);
+            const note = {
+                title: file.name || "Dropped file",
+                body: `[](:/${resource.id})`,
+                parent_id: folder.id,
+            };
+            await joplin.data.post(["notes"], note);
+        }
+    } catch (error) {
+        await joplin.views.dialogs.showMessageBox(`There was an error creating notes from dropped files.\n\n${error}`);
+        const profileDir = await ProfileDirGlobalSetting.get();
+        const logger = new Logger(profileDir);
+        await logger.log(`onFileDrop error: ${error}`);
     }
 };
 
