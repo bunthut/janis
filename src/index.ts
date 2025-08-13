@@ -10,7 +10,7 @@ import { TemplateAction, performAction } from "./actions";
 import { loadLegacyTemplates } from "./legacyTemplates";
 import open from "open";
 import { Logger } from "./logger";
-import { PromiseGroup } from "./utils/promises";
+import { PromiseGroup, NamedPromiseGroup } from "./utils/promises";
 import { PluginSettingsRegistry, DefaultNoteTemplateIdSetting, DefaultTodoTemplateIdSetting, DefaultTemplatesConfigSetting } from "./settings";
 import { LocaleGlobalSetting, DateFormatGlobalSetting, TimeFormatGlobalSetting, ProfileDirGlobalSetting } from "./settings/global";
 import { DefaultTemplatesConfig } from "./settings/defaultTemplatesConfig";
@@ -63,18 +63,18 @@ joplin.plugins.register({
 
 
         // Global variables
-        const joplinGlobalApis = new PromiseGroup();
+        const joplinGlobalApis = new NamedPromiseGroup();
 
-        joplinGlobalApis.set("dialogViewHandle", joplin.views.dialogs.create("dialog"));
-        joplinGlobalApis.set("userLocale", LocaleGlobalSetting.get());
-        joplinGlobalApis.set("userDateFormat", DateFormatGlobalSetting.get());
-        joplinGlobalApis.set("userTimeFormat", TimeFormatGlobalSetting.get());
-        joplinGlobalApis.set("profileDir", ProfileDirGlobalSetting.get());
+        joplinGlobalApis.add("dialogViewHandle", joplin.views.dialogs.create("dialog"));
+        joplinGlobalApis.add("userLocale", LocaleGlobalSetting.get());
+        joplinGlobalApis.add("userDateFormat", DateFormatGlobalSetting.get());
+        joplinGlobalApis.add("userTimeFormat", TimeFormatGlobalSetting.get());
+        joplinGlobalApis.add("profileDir", ProfileDirGlobalSetting.get());
 
         const {
             dialogViewHandle, userLocale, userDateFormat,
             userTimeFormat, profileDir
-        } = await joplinGlobalApis.groupAll();
+        } = await joplinGlobalApis.all();
 
         const dateAndTimeUtils = new DateAndTimeUtils(userLocale, userDateFormat, userTimeFormat);
         const logger = new Logger(profileDir);
@@ -102,11 +102,11 @@ joplin.plugins.register({
 
         const getNotebookDefaultTemplatesDisplayData = async (settings: DefaultTemplatesConfig): Promise<NotebookDefaultTemplatesDisplayData[]> => {
             const getDisplayDataForNotebook = async (notebookId: string, defaultTemplateNoteId: string | null, defaultTemplateTodoId: string | null): Promise<NotebookDefaultTemplatesDisplayData | null> => {
-                const promiseGroup = new PromiseGroup();
-                promiseGroup.set("notebook", getFolderFromId(notebookId));
-                promiseGroup.set("noteTemplate", getTemplateFromId(defaultTemplateNoteId));
-                promiseGroup.set("todoTemplate", getTemplateFromId(defaultTemplateTodoId));
-                const { notebook, noteTemplate, todoTemplate } = await promiseGroup.groupAll();
+                const promiseGroup = new NamedPromiseGroup();
+                promiseGroup.add("notebook", getFolderFromId(notebookId));
+                promiseGroup.add("noteTemplate", getTemplateFromId(defaultTemplateNoteId));
+                promiseGroup.add("todoTemplate", getTemplateFromId(defaultTemplateTodoId));
+                const { notebook, noteTemplate, todoTemplate } = await promiseGroup.all();
 
                 if (notebook === null || (noteTemplate === null && todoTemplate === null)) {
                     // Async remove of the obsolete config
@@ -125,7 +125,7 @@ joplin.plugins.register({
                 notebookDisplayDataPromiseGroup.add(getDisplayDataForNotebook(
                     notebookId, defaultTemplates.defaultNoteTemplateId, defaultTemplates.defaultTodoTemplateId));
             }
-            return (await notebookDisplayDataPromiseGroup.groupAll())[PromiseGroup.UNNAMED_KEY].filter(x => x !== null);
+            return (await notebookDisplayDataPromiseGroup.all()).filter(x => x !== null);
         }
 
 
@@ -420,7 +420,7 @@ joplin.plugins.register({
             MenuItemLocation.View
         );
 
-        await joplinCommands.groupAll();
+        await joplinCommands.all();
 
 
         // Folder context menu
