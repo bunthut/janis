@@ -67,12 +67,12 @@ const currentGitInfo = () => {
 	}
 };
 
-const readManifest = (manifestPath) => {
-	const content = fs.readFileSync(manifestPath, 'utf8');
-	const output = JSON.parse(content);
-	if (!output.id) throw new Error(`Manifest plugin ID is not set in ${manifestPath}`);
-	return output;
-};
+function readManifest(manifestPath) {
+        const content = fs.readFileSync(manifestPath, 'utf8');
+        const output = JSON.parse(content);
+        if (!output.id) throw new Error(`Manifest plugin ID is not set in ${manifestPath}`);
+        return output;
+}
 
 const createPluginArchive = (sourceDir, destPath) => {
 	const distFiles = glob.sync(`${sourceDir}/**/*`, { nodir: true })
