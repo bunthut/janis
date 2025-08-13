@@ -228,6 +228,20 @@ joplin.plugins.register({
         }));
 
         joplinCommands.add(joplin.commands.register({
+            name: "importTemplateFromFile",
+            label: "Import template from file",
+            execute: async () => {
+                const electron = joplin.require("electron");
+                const { canceled, filePaths } = await electron.remote.dialog.showOpenDialog({
+                    properties: ["openFile"],
+                });
+                if (!canceled && filePaths && filePaths.length > 0) {
+                    await joplin.views.dialogs.showMessageBox(`Selected file: ${filePaths[0]}`);
+                }
+            }
+        }));
+
+        joplinCommands.add(joplin.commands.register({
             name: "showPluginDocumentation",
             label: "Help",
             execute: async () => {
@@ -293,6 +307,12 @@ joplin.plugins.register({
                 commandName: "showPluginDocumentation"
             }
         ]);
+
+        await joplin.views.menus.create("importTemplates", "Import", [
+            {
+                commandName: "importTemplateFromFile",
+            },
+        ], MenuItemLocation.Tools);
 
         await joplinCommands.groupAll();
 
