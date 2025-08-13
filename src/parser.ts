@@ -13,7 +13,7 @@ import { HelperFactory } from "./helpers";
 // Can't use import for this library because the types in the library
 // are declared incorrectly which result in typescript errors.
 // Reference -> https://github.com/jxson/front-matter/issues/76
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-var-requires -- Old code before rule was applied
 const frontmatter = require("front-matter");
 
 export interface NewNote {
@@ -203,7 +203,7 @@ export class Parser {
 
         const wrapInQuotes = (definitionsBlock: string, properties: string[]) => {
             for (const prop of properties) {
-                // eslint-disable-next-line no-useless-escape
+                // eslint-disable-next-line no-useless-escape -- Old code before rule was applied
                 const pattern = new RegExp(`^[^\S\n]*${prop}[^\S\n]*:.*`, "gm");
                 const matches = definitionsBlock.match(pattern);
                 if (!matches) {

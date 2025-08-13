@@ -16,7 +16,7 @@ export class BooleanCustomVariable extends CustomVariable {
         );
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Old code before rule was applied
     public processInput(input: string, dateAndTimeUtils: DateAndTimeUtils): boolean {
         return input === "true";
     }
