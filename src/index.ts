@@ -92,6 +92,20 @@ joplin.plugins.register({
         }
 
 
+        // File drop handling
+        let fileDropListener: any = null;
+        const onFileDrop = async (event: any) => {
+            if (!event || !event.files) return;
+            for (const file of event.files) {
+                const resource: any = await joplin.data.post(["resources"], file);
+                const note = {
+                    title: file.name || "Dropped file",
+                    body: `[](:/${resource.id})`,
+                };
+                await joplin.data.post(["notes"], note);
+            }
+        };
+
         // Register all commands
         const joplinCommands = new PromiseGroup();
 
@@ -279,6 +293,21 @@ joplin.plugins.register({
             }
         }));
 
+        joplinCommands.add(joplin.commands.register({
+            name: "toggleFileDrop",
+            label: "Toggle file drop",
+            execute: async () => {
+                if (fileDropListener) {
+                    await fileDropListener.dispose();
+                    fileDropListener = null;
+                    await joplin.views.dialogs.showMessageBox("File drop disabled");
+                } else {
+                    fileDropListener = await (joplin.workspace as any).on("fileDrop", onFileDrop);
+                    await joplin.views.dialogs.showMessageBox("File drop enabled");
+                }
+            }
+        }));
+
 
         // Create templates menu
         await joplin.views.menus.create("templates", "Templates", [
@@ -304,6 +333,9 @@ joplin.plugins.register({
             },
             {
                 commandName: "showTimeline"
+            },
+            {
+                commandName: "toggleFileDrop",
             },
             {
                 label: "Default templates",
