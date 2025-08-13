@@ -14,6 +14,7 @@ This plugin allows you to create templates in Joplin and use them to create new 
 
 - [Installing Plugin](#installing-plugin)
 - [Importing Legacy Templates](#importing-legacy-templates)
+- [Importing Notebin Data](#importing-notebin-data)
 - [Using the Template Plugin](#using-the-template-plugin)
   - [Adding a new template](#adding-a-new-template)
   - [Using templates](#using-templates)
@@ -40,6 +41,17 @@ This plugin allows you to create templates in Joplin and use them to create new 
 - If you were already using the legacy version of templates, your templates will be automatically imported once you install the plugin. They will appear in an `Imported Templates - dd/mm/yyyy` notebook. See the `README` note in that notebook for more details.
 
 - Your existing templates will still be present in the templates directory but will be renamed from `.md` to `.md.old`. You can safely delete these old templates once you verify that they've been imported correctly in Joplin.
+
+## Importing Notebin Data
+If you have notes exported from Notebin, they can be brought into Joplin using the Notebin importer. The importer expects a JSON file containing an array of notes with the following structure:
+
+```json
+[
+  { "title": "My Note", "content": "Body", "tags": ["tag1", "tag2"] }
+]
+```
+
+To use the importer, open the Templates menu and choose **Import from Notebin**. Select your JSON file and the plugin will create notes using the provided titles, content and tags. The `tags` field is optional.
 
 ## Using the Template Plugin
 
