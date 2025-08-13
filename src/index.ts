@@ -14,6 +14,7 @@ import { PromiseGroup } from "./utils/promises";
 import { PluginSettingsRegistry, DefaultNoteTemplateIdSetting, DefaultTodoTemplateIdSetting, DefaultTemplatesConfigSetting } from "./settings";
 import { LocaleGlobalSetting, DateFormatGlobalSetting, TimeFormatGlobalSetting, ProfileDirGlobalSetting } from "./settings/global";
 import { DefaultTemplatesConfig } from "./settings/defaultTemplatesConfig";
+import templatesImportModule from "./importModule";
 
 const DOCUMENTATION_URL = "https://github.com/joplin/plugin-templates#readme";
 
@@ -40,6 +41,8 @@ joplin.plugins.register({
         const dateAndTimeUtils = new DateAndTimeUtils(userLocale, userDateFormat, userTimeFormat);
         const logger = new Logger(profileDir);
         const parser = new Parser(dateAndTimeUtils, dialogViewHandle, logger);
+
+        await joplin.interop.registerImportModule(templatesImportModule);
 
 
         // Asynchronously load legacy templates
