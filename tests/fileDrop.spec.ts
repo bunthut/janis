@@ -1,5 +1,5 @@
 import joplin from "api";
-import { onFileDrop } from "../src/index";
+import { onFileDrop, initializeFileDrop } from "../src/index";
 import { Logger } from "../src/logger";
 import * as folders from "../src/utils/folders";
 
