@@ -107,8 +107,14 @@ joplin.plugins.register({
 // File drop handling
 let fileDropListener: any = null;
 
+// File drop handling
+let fileDropListener: any = null;
+
 const onFileDrop = async (event: any) => {
     if (!event || !event.files) return;
+
+    const folder = await joplin.workspace.selectedFolder();
+    if (!folder) return;
 
     for (const file of event.files) {
         const resource: any = await joplin.data.post(["resources"], file);
@@ -117,6 +123,26 @@ const onFileDrop = async (event: any) => {
         const note = {
             title: file.name || "Dropped file",
             body: isImage ? `![](:/${resource.id})` : `[${file.name || "Dropped file"}](:/${resource.id})`,
+            parent_id: folder.id, // Set the parent_id to the selected folder
+        };
+
+        await joplin.data.post(["notes"], note);
+    }
+};
+
+// Add event listener for file drops
+fileDropListener = (event: DragEvent) => {
+    event.preventDefault();
+    onFileDrop(event);
+};
+
+// Assuming you have a target element to drop files onto
+const dropZone = document.getElementById("drop-zone");
+if (dropZone) {
+    dropZone.addEventListener("dragover", (event) => event.preventDefault());
+    dropZone.addEventListener("drop", fileDropListener);
+}
+
         };
 
         await joplin.data.post(["notes"], note);
