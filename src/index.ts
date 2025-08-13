@@ -29,15 +29,22 @@ export const onFileDrop = async (event: { files: any[] } | null) => {
             folder = JSON.parse(selected);
         }
 
+        const promises: Promise<void>[] = [];
+
         for (const file of event.files) {
-            const resource: any = await joplin.data.post(["resources"], file);
-            const note = {
-                title: file.name || "Dropped file",
-                body: `[](:/${resource.id})`,
-                parent_id: folder.id,
-            };
-            await joplin.data.post(["notes"], note);
+            const promise = (async () => {
+                const resource: any = await joplin.data.post(["resources"], file);
+                const note = {
+                    title: file.name || "Dropped file",
+                    body: `[](:/${resource.id})`,
+                    parent_id: folder.id,
+                };
+                await joplin.data.post(["notes"], note);
+            })();
+            promises.push(promise);
         }
+
+        await Promise.all(promises);
     } catch (error) {
         await joplin.views.dialogs.showMessageBox(`There was an error creating notes from dropped files.\n\n${error}`);
         const profileDir = await ProfileDirGlobalSetting.get();
