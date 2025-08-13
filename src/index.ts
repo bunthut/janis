@@ -16,7 +16,7 @@ import { LocaleGlobalSetting, DateFormatGlobalSetting, TimeFormatGlobalSetting, 
 import { DefaultTemplatesConfig } from "./settings/defaultTemplatesConfig";
 import templatesImportModule from "./importModule";
 
-const DOCUMENTATION_URL = "https://github.com/joplin/plugin-templates#readme";
+const documentationUrl = "https://github.com/joplin/plugin-templates#readme";
 
 joplin.plugins.register({
     onStart: async function() {
@@ -248,7 +248,7 @@ joplin.plugins.register({
             name: "showPluginDocumentation",
             label: "Help",
             execute: async () => {
-                open(DOCUMENTATION_URL);
+                open(documentationUrl);
             }
         }));
 

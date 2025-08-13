@@ -31,16 +31,16 @@ interface NoteMetadata {
     todo_due: number | null;
 }
 
-const NOTE_TITLE_VARIABLE_NAME = "template_title";
-const NOTE_TAGS_VARIABLE_NAME = "template_tags";
-const NOTE_FOLDER_VARIABLE_NAME = "template_notebook";
-const TODO_DUE_VARIABLE_NAME = "template_todo_alarm";
+const noteTitleVariableName = "template_title";
+const noteTagsVariableName = "template_tags";
+const noteFolderVariableName = "template_notebook";
+const todoDueVariableName = "template_todo_alarm";
 
 export class Parser {
     private utils: DateAndTimeUtils;
     private dialog: string;
     private logger: Logger;
-    private specialVariableNames = [NOTE_TITLE_VARIABLE_NAME, NOTE_TAGS_VARIABLE_NAME, NOTE_FOLDER_VARIABLE_NAME, TODO_DUE_VARIABLE_NAME];
+    private specialVariableNames = [noteTitleVariableName, noteTagsVariableName, noteFolderVariableName, todoDueVariableName];
 
     constructor(dateAndTimeUtils: DateAndTimeUtils, dialogViewHandle: string, logger: Logger) {
         this.utils = dateAndTimeUtils;
@@ -145,16 +145,16 @@ export class Parser {
             todo_due: null,
         };
 
-        if (NOTE_TITLE_VARIABLE_NAME in parsedSpecialVariables) {
-            meta.title = parsedSpecialVariables[NOTE_TITLE_VARIABLE_NAME];
+        if (noteTitleVariableName in parsedSpecialVariables) {
+            meta.title = parsedSpecialVariables[noteTitleVariableName];
         }
 
-        if (NOTE_TAGS_VARIABLE_NAME in parsedSpecialVariables) {
-            meta.tags = parsedSpecialVariables[NOTE_TAGS_VARIABLE_NAME].split(",").map(t => t.trim()).filter(t => t !== "");
+        if (noteTagsVariableName in parsedSpecialVariables) {
+            meta.tags = parsedSpecialVariables[noteTagsVariableName].split(",").map(t => t.trim()).filter(t => t !== "");
         }
 
-        if (NOTE_FOLDER_VARIABLE_NAME in parsedSpecialVariables) {
-            const folderId = parsedSpecialVariables[NOTE_FOLDER_VARIABLE_NAME].trim();
+        if (noteFolderVariableName in parsedSpecialVariables) {
+            const folderId = parsedSpecialVariables[noteFolderVariableName].trim();
             if (await doesFolderExist(folderId)) {
                 meta.folder = folderId;
             } else {
@@ -162,8 +162,8 @@ export class Parser {
             }
         }
 
-        if (TODO_DUE_VARIABLE_NAME in parsedSpecialVariables) {
-            const rawTodoDue = parsedSpecialVariables[TODO_DUE_VARIABLE_NAME].trim()
+        if (todoDueVariableName in parsedSpecialVariables) {
+            const rawTodoDue = parsedSpecialVariables[todoDueVariableName].trim()
             meta.todo_due = this.utils.formatLocalToJoplinCompatibleUnixTime(rawTodoDue, this.utils.getDateTimeFormat());
         }
 
