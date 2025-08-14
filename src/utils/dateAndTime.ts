@@ -1,4 +1,9 @@
-import moment from "moment";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+
+dayjs.extend(customParseFormat);
+dayjs.extend(advancedFormat);
 
 // These are meant to parse the date and time formats
 // supported by Joplin. It doesn't support seconds or
@@ -25,7 +30,7 @@ export class DateAndTimeUtils {
         this.dateFormat = dateFormat;
         this.timeFormat = timeFormat;
 
-        moment.locale(this.locale);
+        dayjs.locale(this.locale);
     }
 
     public getDateFormat(): string {
@@ -44,7 +49,7 @@ export class DateAndTimeUtils {
         if (!format) {
             format = this.getDateTimeFormat();
         }
-        return moment(ms).format(format);
+        return dayjs(ms).format(format.replace(/\[\]/g, ""));
     }
 
     public formatLocalToJoplinCompatibleUnixTime(input: string, format: string | null = null): number {
@@ -52,7 +57,11 @@ export class DateAndTimeUtils {
             format = this.getDateTimeFormat();
         }
 
-        const date = moment(input, format, true);
+        let date = dayjs(input, format, true);
+        if (!date.isValid() && format.includes("HH") && /a/i.test(format)) {
+            const altFormat = format.replace("HH", "hh");
+            date = dayjs(input, altFormat, true);
+        }
         if (!date.isValid()) {
             throw new Error(`Was not able to parse ${input} according to format ${format}`);
         }
@@ -73,7 +82,11 @@ export class DateAndTimeUtils {
     }
 
     public parseDate(input: string, format: string): ParsedDate {
-        const date = moment(input, format, true);
+        let date = dayjs(input, format, true);
+        if (!date.isValid() && format.includes("HH") && /a/i.test(format)) {
+            const altFormat = format.replace("HH", "hh");
+            date = dayjs(input, altFormat, true);
+        }
 
         if (!date.isValid()) {
             throw new Error(`Was not able to parse ${input} according to format ${format}`);
@@ -87,16 +100,20 @@ export class DateAndTimeUtils {
     }
 
     public parseTime(input: string, format: string): ParsedTime {
-        const time = moment(input, format, true);
+        let time = dayjs(input, format, true);
+        if (!time.isValid() && format.includes("HH") && /a/i.test(format)) {
+            const altFormat = format.replace("HH", "hh");
+            time = dayjs(input, altFormat, true);
+        }
 
         if (!time.isValid()) {
             throw new Error(`Was not able to parse ${input} according to format ${format}`);
         }
 
         return {
-            hours: time.hours(),
-            minutes: time.minutes(),
-            seconds: time.seconds(),
+            hours: time.hour(),
+            minutes: time.minute(),
+            seconds: time.second(),
         };
     }
 }

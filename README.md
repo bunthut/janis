@@ -100,7 +100,7 @@ The currently supported built in template variables are:
 | `{{date}}` | Today's date  | 2019-01-01 |
 | `{{time}}` | Current time  | 13:00 |
 | `{{datetime}}` | Current date and time  | 01/01/19 1:00 PM |
-| `{{#custom_datetime}}` | Current date and/or time formatted based on a supplied string (using [moment.js](https://momentjs.com/) formatting) | `{{#custom_datetime}}M d{{/custom_datetime}}` |
+| `{{#custom_datetime}}` | Current date and/or time formatted based on a supplied string (using [dayjs](https://day.js.org/) formatting) | `{{#custom_datetime}}M d{{/custom_datetime}}` |
 | `{{bowm}}` | Date of the beginning of the week (when week starts on Monday) | |
 | `{{bows}}` | Date of the beginning of the week (when week starts on Sunday) | |
 
