@@ -3,6 +3,11 @@ import { onFileDrop, initializeFileDrop } from "../src/index";
 import { Logger } from "../src/logger";
 import * as folders from "../src/utils/folders";
 
+const flushPromises = async () => {
+    await Promise.resolve();
+    await Promise.resolve();
+    await new Promise(resolve => setImmediate(resolve));
+};
 
 describe("onFileDrop", () => {
     afterEach(() => {
@@ -29,10 +34,13 @@ describe("onFileDrop", () => {
         });
 
         const dropPromise = onFileDrop({ files });
+        let dropResolved = false;
+        dropPromise.then(() => { dropResolved = true; });
 
-        await Promise.resolve();
+        await flushPromises();
         expect(selectedFolderMock).toHaveBeenCalledTimes(1);
         expect(postMock.mock.calls.filter(call => call[0][0] === "resources").length).toBe(2);
+        expect(dropResolved).toBe(false);
 
         for (const resolve of resourceResolvers) resolve();
         await dropPromise;
