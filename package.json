@@ -2,7 +2,7 @@
   "name": "joplin-plugin-templates",
   "version": "2.4.0",
   "scripts": {
-    "dist": "NODE_OPTIONS=--openssl-legacy-provider JOPLIN_PLUGIN_CONFIG=buildMain webpack && NODE_OPTIONS=--openssl-legacy-provider JOPLIN_PLUGIN_CONFIG=buildExtraScripts webpack && NODE_OPTIONS=--openssl-legacy-provider JOPLIN_PLUGIN_CONFIG=createArchive webpack",
+    "dist": "JOPLIN_PLUGIN_CONFIG=buildMain webpack && JOPLIN_PLUGIN_CONFIG=buildExtraScripts webpack && JOPLIN_PLUGIN_CONFIG=createArchive webpack",
     "prepare": "npm run dist",
     "update": "npm install -g generator-joplin && yo joplin --update",
     "lint": "eslint '{src,tests}/**/*.{ts,json}'",
@@ -50,10 +50,10 @@
     "yargs": "^17.7.2"
   },
   "dependencies": {
+    "dayjs": "^1.11.13",
     "front-matter": "^4.0.2",
     "handlebars": "^4.7.7",
     "html-entities": "^2.3.2",
-    "moment": "^2.29.1",
     "open": "^8.2.1"
   }
 }

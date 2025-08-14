@@ -1,6 +1,6 @@
 import { HandlebarsHelper, HelperConstructorBlock } from "./helper";
 import { AttributeValueType, AttributeDefinition, AttributeParser } from "./utils/attributes";
-import moment from "moment";
+import dayjs from "dayjs";
 
 const format = "format";
 const setDate = "set_date";
@@ -65,29 +65,29 @@ export const datetimeHelper: HelperConstructorBlock = (ctx) => {
         const parser = new AttributeParser(schema);
         const attrs = parser.parse(options.hash);
 
-        const now = moment(new Date().getTime());
+        let now = dayjs(new Date().getTime());
 
         if (attrs[setDate]) {
             const parsedDate = ctx.dateAndTimeUtils.parseDate(attrs[setDate] as string, ctx.dateAndTimeUtils.getDateFormat());
-            now.set("date", parsedDate.date);
-            now.set("month", parsedDate.month);
-            now.set("year", parsedDate.year);
+            now = now.set("date", parsedDate.date);
+            now = now.set("month", parsedDate.month);
+            now = now.set("year", parsedDate.year);
         }
 
         if (attrs[setTime]) {
             const parsedTime = ctx.dateAndTimeUtils.parseTime(attrs[setTime] as string, ctx.dateAndTimeUtils.getTimeFormat());
-            now.set("hours", parsedTime.hours);
-            now.set("minutes", parsedTime.minutes);
-            now.set("seconds", parsedTime.seconds);
-            now.set("milliseconds", 0);
+            now = now.set("hour", parsedTime.hours);
+            now = now.set("minute", parsedTime.minutes);
+            now = now.set("second", parsedTime.seconds);
+            now = now.set("millisecond", 0);
         }
 
-        now.add(attrs[deltaYears] as number, "years");
-        now.add(attrs[deltaMonths] as number, "months");
-        now.add(attrs[deltaDays] as number, "days");
-        now.add(attrs[deltaHours] as number, "hours");
-        now.add(attrs[deltaMinutes] as number, "minutes");
-        now.add(attrs[deltaSeconds] as number, "seconds");
+        now = now.add(attrs[deltaYears] as number, "year");
+        now = now.add(attrs[deltaMonths] as number, "month");
+        now = now.add(attrs[deltaDays] as number, "day");
+        now = now.add(attrs[deltaHours] as number, "hour");
+        now = now.add(attrs[deltaMinutes] as number, "minute");
+        now = now.add(attrs[deltaSeconds] as number, "second");
 
         return ctx.dateAndTimeUtils.formatMsToLocal(now.toDate().getTime(), attrs[format] as string);
     });
