@@ -57,8 +57,8 @@ describe("processAttachment", () => {
     });
 
     test("extracts text from PDF attachments", async () => {
-        const readFileSyncMock = jest.fn().mockReturnValue(Buffer.from("pdfdata"));
-        jest.doMock("fs", () => ({ readFileSync: readFileSyncMock }));
+        const readFileMock = jest.fn().mockResolvedValue(Buffer.from("pdfdata"));
+        jest.doMock("fs", () => ({ promises: { readFile: readFileMock } }));
         jest.doMock("pdf-parse", () => jest.fn().mockResolvedValue({ text: "First sentence. Second sentence. Third sentence." }), { virtual: true });
 
         const joplin = (await import("api")).default as any;
@@ -76,7 +76,7 @@ describe("processAttachment", () => {
 
         await processAttachment("res1", "note1");
 
-        expect(readFileSyncMock).toHaveBeenCalledWith("/path/res1.pdf");
+        expect(readFileMock).toHaveBeenCalledWith("/path/res1.pdf");
         expect(putMock).toHaveBeenCalledWith(["notes", "note1"], null, { body: "First sentence. Second sentence.\n\nexisting body" });
     });
 
