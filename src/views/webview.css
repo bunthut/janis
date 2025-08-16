@@ -1,5 +1,4 @@
 body {
-    text-align: center;
     font-size: 14px;
 }
 
@@ -33,6 +32,7 @@ input, select {
 }
 
 .variablesForm {
+    text-align: center;
     max-height: 80vh;
     overflow: scroll;
 }
@@ -41,7 +41,7 @@ input, select {
 .timeline-container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100%;
 }
 
 .timeline-strip {
