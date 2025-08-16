@@ -107,7 +107,7 @@ joplin.plugins.register({
         const joplinGlobalApis = new NamedPromiseGroup();
 
         joplinGlobalApis.add("dialogViewHandle", joplin.views.dialogs.create("dialog"));
-        joplinGlobalApis.add("timelineViewHandle", joplin.views.dialogs.create("timeline"));
+        joplinGlobalApis.add("timelineViewHandle", (joplin.views.panels as any).create("timeline", { placement: "top" }));
         joplinGlobalApis.add("userLocale", LocaleGlobalSetting.get());
         joplinGlobalApis.add("userDateFormat", DateFormatGlobalSetting.get());
         joplinGlobalApis.add("userTimeFormat", TimeFormatGlobalSetting.get());
@@ -334,21 +334,29 @@ joplin.plugins.register({
             execute: importTemplateFromFile,
         }));
 
+        const refreshTimeline = async () => {
+            const response: { items: TimelineNote[] } = await joplin.data.get([
+                "notes",
+            ], {
+                fields: ["id", "title", "created_time"],
+                order_by: "created_time",
+                order_dir: "ASC",
+            }) as { items: TimelineNote[] };
+            await setTimelineView(timelineViewHandle, response.items);
+        };
+
         joplinCommands.add(joplin.commands.register({
             name: "showTimeline",
             label: "Show timeline",
             execute: async () => {
-                const response: { items: TimelineNote[] } = await joplin.data.get([
-                    "notes",
-                ], {
-                    fields: ["id", "title", "created_time"],
-                    order_by: "created_time",
-                    order_dir: "ASC",
-                }) as { items: TimelineNote[] };
-                await setTimelineView(timelineViewHandle, response.items);
-                await joplin.views.dialogs.open(timelineViewHandle);
+                await refreshTimeline();
+                await joplin.views.panels.show(timelineViewHandle, true);
             },
         }));
+
+        joplin.workspace.onNoteChange(() => {
+            refreshTimeline();
+        });
 
         joplinCommands.add(joplin.commands.register({
             name: "showPluginDocumentation",

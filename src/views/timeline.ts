@@ -12,16 +12,23 @@ const formatDate = (timestamp: number): string => {
 };
 
 export const setTimelineView = async (viewHandle: string, notes: TimelineNote[]): Promise<void> => {
-    await joplin.views.dialogs.addScript(viewHandle, "./views/webview.css");
+    await joplin.views.panels.addScript(viewHandle, "./views/webview.css");
+
+    const stripHtml = notes
+        .map(note => `<span class="timeline-strip-item" data-id="${note.id}">${formatDate(note.created_time)}</span>`) 
+        .join("");
+
+    const notesHtml = notes
+        .map(note => `<div class="timeline-note" data-id="${note.id}">${encode(note.title)}</div>`)
+        .join("");
 
     const html = `
-        <h2> Timeline </h2>
-        <ul class="timeline">
-            ${notes.map(note => `<li><span class="date">${formatDate(note.created_time)}</span>${encode(note.title)}</li>`).join("")}
-        </ul>
+        <div class="timeline-container">
+            <div class="timeline-strip">${stripHtml}</div>
+            <div class="timeline-notes">${notesHtml}</div>
+        </div>
     `;
 
-    await joplin.views.dialogs.setHtml(viewHandle, html);
-    await joplin.views.dialogs.setButtons(viewHandle, [{ id: "ok" }]);
+    await joplin.views.panels.setHtml(viewHandle, html);
 };
 

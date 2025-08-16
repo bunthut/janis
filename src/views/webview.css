@@ -37,17 +37,34 @@ input, select {
     overflow: scroll;
 }
 
-.timeline {
-    list-style: none;
-    padding-left: 0;
+/* Timeline panel layout */
+.timeline-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.timeline-strip {
+    display: flex;
+    overflow-x: auto;
+    position: sticky;
+    top: 0;
+    background: var(--joplin-background-color);
+    padding: 4px;
+}
+
+.timeline-strip-item {
+    margin-right: 8px;
+    white-space: nowrap;
+}
+
+.timeline-notes {
+    flex: 1;
+    overflow-y: auto;
     text-align: left;
+    padding: 8px;
 }
 
-.timeline li {
-    margin: 8px 0;
-}
-
-.timeline .date {
-    font-weight: bold;
-    margin-right: 6px;
+.timeline-note {
+    margin-bottom: 8px;
 }
