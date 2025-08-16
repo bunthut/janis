@@ -1,5 +1,5 @@
 {
-  "name": "joplin-plugin-templates",
+  "name": "joplin-plugin-janis",
   "version": "2.4.0",
   "scripts": {
     "dist": "JOPLIN_PLUGIN_CONFIG=buildMain webpack && JOPLIN_PLUGIN_CONFIG=buildExtraScripts webpack && JOPLIN_PLUGIN_CONFIG=createArchive webpack",

@@ -10,7 +10,7 @@ const githubAccessToken = process.env.GITHUB_ACCESS_TOKEN;
 const discourseApiKey = process.env.DISCOURSE_API_KEY;
 const discourseUrl = "https://discourse.joplinapp.org";
 const templatePluginTopicId = 17470;
-const pluginRepo = "https://www.github.com/joplin/plugin-templates";
+const pluginRepo = "https://www.github.com/joplin/janis";
 
 const getLatestRelease = async () => {
     const version = JSON.parse(await fs.readFile(packageJsonPath, "utf-8")).version;
@@ -35,7 +35,7 @@ const createGithubRelease = async (release) => {
     const tagName = `v${release.version}`;
 
     const response = await axios.post(
-        "https://api.github.com/repos/joplin/plugin-templates/releases",
+        "https://api.github.com/repos/joplin/janis/releases",
         {
             tag_name: tagName,
             name: tagName,
