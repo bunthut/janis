@@ -107,7 +107,6 @@ joplin.plugins.register({
         const joplinGlobalApis = new NamedPromiseGroup();
 
         joplinGlobalApis.add("dialogViewHandle", joplin.views.dialogs.create("dialog"));
-        joplinGlobalApis.add("timelineViewHandle", (joplin.views.panels as any).create("timeline", { placement: "top" }));
         joplinGlobalApis.add("userLocale", LocaleGlobalSetting.get());
         joplinGlobalApis.add("userDateFormat", DateFormatGlobalSetting.get());
         joplinGlobalApis.add("userTimeFormat", TimeFormatGlobalSetting.get());
@@ -115,12 +114,18 @@ joplin.plugins.register({
 
         const {
             dialogViewHandle,
-            timelineViewHandle,
             userLocale,
             userDateFormat,
             userTimeFormat,
             profileDir,
         } = await joplinGlobalApis.all();
+
+        let timelineViewHandle: string | null = null;
+        try {
+            timelineViewHandle = await (joplin.views.panels as any).create("timeline", { placement: "top" });
+        } catch {
+            await joplin.views.dialogs.showMessageBox("Timeline view requires a newer Joplin version.");
+        }
 
         const dateAndTimeUtils = new DateAndTimeUtils(userLocale, userDateFormat, userTimeFormat);
         const logger = new Logger(profileDir);
@@ -335,6 +340,7 @@ joplin.plugins.register({
         }));
 
         const refreshTimeline = async () => {
+            if (!timelineViewHandle) return;
             const response: { items: TimelineNote[] } = await joplin.data.get([
                 "notes",
             ], {
@@ -345,18 +351,27 @@ joplin.plugins.register({
             await setTimelineView(timelineViewHandle, response.items);
         };
 
-        joplinCommands.add(joplin.commands.register({
-            name: "showTimeline",
-            label: "Show timeline",
-            execute: async () => {
-                await refreshTimeline();
-                await joplin.views.panels.show(timelineViewHandle, true);
-            },
-        }));
+        if (timelineViewHandle) {
+            joplinCommands.add(joplin.commands.register({
+                name: "showTimeline",
+                label: "Show timeline",
+                execute: async () => {
+                    await refreshTimeline();
+                    await joplin.views.panels.show(timelineViewHandle, true);
+                },
+            }));
 
-        joplin.workspace.onNoteChange(() => {
-            refreshTimeline();
-        });
+            joplin.workspace.onNoteChange(() => {
+                refreshTimeline();
+            });
+        } else {
+            joplinCommands.add(joplin.commands.register({
+                name: "showTimeline",
+                label: "Show timeline",
+                enabledCondition: "false",
+                execute: async () => {},
+            }));
+        }
 
         joplinCommands.add(joplin.commands.register({
             name: "showPluginDocumentation",
