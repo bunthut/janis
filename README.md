@@ -35,6 +35,7 @@ This plugin allows you to create templates in Joplin and use them to create new 
 - [Contributing](#contributing)
 
 ## Installing Plugin
+Janis requires Joplin **2.12.2 or later**. Please upgrade Joplin before installing the plugin.
 - Open Joplin
 - Go to Tools > Options > Plugins
 - Search for `Janis`
