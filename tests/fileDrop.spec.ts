@@ -20,15 +20,17 @@ describe("onFileDrop", () => {
         (joplin as any).workspace = { selectedFolder: selectedFolderMock } as any;
 
         const resourceResolvers: Array<() => void> = [];
-        const postMock = jest.spyOn(joplin.data, "post").mockImplementation((path: string[], data: any) => {
+        const postMock = jest.spyOn(joplin.data, "post").mockImplementation((path: string[], query: any, body: any) => {
             if (path[0] === "resources") {
+                expect(query).toBeNull();
                 return new Promise(resolve => {
                     const index = resourceResolvers.length + 1;
                     resourceResolvers.push(() => resolve({ id: `res${index}` }));
                 });
             }
             if (path[0] === "notes") {
-                return Promise.resolve({ id: `note-${data.title}` });
+                expect(query).toBeNull();
+                return Promise.resolve({ id: `note-${body.title}` });
             }
             return Promise.resolve({});
         });
@@ -46,12 +48,14 @@ describe("onFileDrop", () => {
         await dropPromise;
 
         expect(postMock.mock.calls.filter(call => call[0][0] === "notes").length).toBe(2);
-        expect(postMock).toHaveBeenCalledWith(["notes"], {
+        expect(postMock).toHaveBeenCalledWith(["resources"], null, files[0]);
+        expect(postMock).toHaveBeenCalledWith(["resources"], null, files[1]);
+        expect(postMock).toHaveBeenCalledWith(["notes"], null, {
             title: "test1.txt",
             body: "[](:/res1)",
             parent_id: "folder1",
         });
-        expect(postMock).toHaveBeenCalledWith(["notes"], {
+        expect(postMock).toHaveBeenCalledWith(["notes"], null, {
             title: "test2.txt",
             body: "[](:/res2)",
             parent_id: "folder1",

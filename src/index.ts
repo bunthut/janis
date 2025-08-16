@@ -35,13 +35,13 @@ export const onFileDrop = async (event: { files: any[] } | null) => {
 
         for (const file of event.files) {
             const promise = (async () => {
-                const resource: any = await joplin.data.post(["resources"], file);
+                const resource: any = await joplin.data.post(["resources"], null, file);
                 const note = {
                     title: file.name || "Dropped file",
                     body: `[](:/${resource.id})`,
                     parent_id: folder.id,
                 };
-                await joplin.data.post(["notes"], note);
+                await joplin.data.post(["notes"], null, note);
             })();
             promises.push(promise);
         }
