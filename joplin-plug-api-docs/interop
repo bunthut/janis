@@ -1,0 +1,48 @@
+
+Search
+
+Joplin Plugin API Documentation
+All
+
+Inherited
+
+    joplin.interop 
+
+joplin.interop
+
+Provides a way to create modules to import external data into Joplin or to export notes into any arbitrary format.
+
+View the demo plugin
+
+To implement an import or export module, you would simply define an object with various event handlers that are called by the application during the import/export process.
+
+See the documentation of the ExportModule and ImportModule for more information.
+
+You may also want to refer to the Joplin API documentation to see the list of properties for each item (note, notebook, etc.) - https://joplinapp.org/help/api/references/rest_api
+
+desktop: While it is possible to register import and export modules on mobile, there is no GUI to activate them.
+Index
+Methods
+
+    registerExportModule
+    registerImportModule
+
+Methods
+registerExportModule
+
+    registerExportModule(module: ExportModule): Promise<void>
+
+    Parameters
+        module: ExportModule
+
+registerImportModule
+
+    registerImportModule(module: ImportModule): Promise<void>
+
+    Parameters
+        module: ImportModule
+
+    joplin.interop
+        registerExportModule
+        registerImportModule
+

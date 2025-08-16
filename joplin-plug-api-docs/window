@@ -1,0 +1,42 @@
+
+Search
+
+Joplin Plugin API Documentation
+All
+
+Inherited
+
+    joplin.window 
+
+joplin.window
+Index
+Methods
+
+    loadChromeCssFile
+    loadNoteCssFile
+
+Methods
+loadChromeCssFile
+
+    loadChromeCssFile(filePath: string): Promise<void>
+
+    Loads a chrome CSS file. It will apply to the window UI elements, except for the note viewer. It is the same as the "Custom stylesheet for Joplin-wide app styles" setting. See the Load CSS Demo for an example.
+
+    desktop
+    Parameters
+        filePath: string
+
+loadNoteCssFile
+
+    loadNoteCssFile(filePath: string): Promise<void>
+
+    Loads a note CSS file. It will apply to the note viewer, as well as any exported or printed note. It is the same as the "Custom stylesheet for rendered Markdown" setting. See the Load CSS Demo for an example.
+
+    desktop
+    Parameters
+        filePath: string
+
+    joplin.window
+        loadChromeCssFile
+        loadNoteCssFile
+

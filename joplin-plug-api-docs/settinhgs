@@ -1,0 +1,135 @@
+
+Search
+
+Joplin Plugin API Documentation
+All
+
+Inherited
+
+    joplin.settings 
+
+joplin.settings
+
+This API allows registering new settings and setting sections, as well as getting and setting settings. Once a setting has been registered it will appear in the config screen and be editable by the user.
+
+Settings are essentially key/value pairs.
+
+Note: Currently this API does not provide access to Joplin's built-in settings. This is by design as plugins that modify user settings could give unexpected results
+
+View the demo plugin
+Index
+Methods
+
+    globalValue
+    globalValues
+    onChange
+    registerSection
+    registerSetting
+    registerSettings
+    setValue
+    value
+    values
+
+Methods
+globalValue
+
+    globalValue(key: string): Promise<any>
+
+    deprecated
+
+        Use joplin.settings.globalValues()
+
+    Parameters
+        key: string
+
+globalValues
+
+    globalValues(keys: string[]): Promise<any[]>
+
+    Gets global setting values, including app-specific settings and those set by other plugins.
+
+    The list of available settings is not documented yet, but can be found by looking at the source code:
+
+    https://github.com/laurent22/joplin/blob/dev/packages/lib/models/settings/builtInMetadata.ts
+    Parameters
+        keys: string[]
+
+onChange
+
+    onChange(handler: ChangeHandler): Promise<void>
+
+    Called when one or multiple settings of your plugin have been changed.
+        For performance reasons, this event is triggered with a delay.
+        You will only get events for your own plugin settings.
+    Parameters
+        handler: ChangeHandler
+
+registerSection
+
+    registerSection(name: string, section: SettingSection): Promise<void>
+
+    Registers a new setting section. Like for registerSetting, it is dynamic and needs to be done every time the plugin starts.
+    Parameters
+        name: string
+        section: SettingSection
+
+registerSetting
+
+    registerSetting(key: string, settingItem: SettingItem): Promise<void>
+
+    deprecated
+
+        Use joplin.settings.registerSettings()
+
+        Registers a new setting.
+
+    Parameters
+        key: string
+        settingItem: SettingItem
+
+registerSettings
+
+    registerSettings(settings: Record<string, SettingItem>): Promise<void>
+
+    Registers new settings. Note that registering a setting item is dynamic and will be gone next time Joplin starts. What it means is that you need to register the setting every time the plugin starts (for example in the onStart event). The setting value however will be preserved from one launch to the next so there is no risk that it will be lost even if for some reason the plugin fails to start at some point.
+    Parameters
+        settings: Record<string, SettingItem>
+
+setValue
+
+    setValue(key: string, value: any): Promise<void>
+
+    Sets a setting value (only applies to setting you registered from your plugin)
+    Parameters
+        key: string
+        value: any
+
+value
+
+    value(key: string): Promise<any>
+
+    Gets a setting value (only applies to setting you registered from your plugin).
+
+    Note: If you want to retrieve all your plugin settings, for example when the plugin starts, it is recommended to use the values() function instead - it will be much faster than calling value() multiple times.
+    Parameters
+        key: string
+
+values
+
+    values(keys: string[] | string): Promise<Record<string, unknown>>
+
+    Gets setting values (only applies to setting you registered from your plugin)
+    Parameters
+        keys: string[] | string
+
+    joplin.settings
+        globalValue
+        globalValues
+        onChange
+        registerSection
+        registerSetting
+        registerSettings
+        setValue
+        value
+        values
+

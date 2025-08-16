@@ -1,0 +1,131 @@
+
+Search
+
+Joplin Plugin API Documentation
+All
+
+Inherited
+
+    joplin 
+
+joplin
+
+This is the main entry point to the Joplin API. You can access various services using the provided accessors.
+
+The API is now relatively stable and in general maintaining backward compatibility is a top priority, so you shouldn't except much breakages.
+
+If a breaking change ever becomes needed, best effort will be done to:
+
+    Deprecate features instead of removing them, so as to give you time to fix the issue;
+    Document breaking changes in the changelog;
+
+So if you are developing a plugin, please keep an eye on the changelog as everything will be in there with information about how to update your code.
+Index
+Accessors
+
+    clipboard
+    commands
+    contentScripts
+    data
+    imaging
+    interop
+    plugins
+    settings
+    views
+    window
+    workspace
+
+Methods
+
+    require
+    shouldUseDarkColors
+    versionInfo
+
+Accessors
+clipboard
+
+    get clipboard(): joplin.clipboard
+
+commands
+
+    get commands(): joplin.commands
+
+contentScripts
+
+    get contentScripts(): joplin.contentScripts
+
+data
+
+    get data(): joplin.data
+
+imaging
+
+    get imaging(): joplin.imaging
+
+interop
+
+    get interop(): joplin.interop
+
+plugins
+
+    get plugins(): joplin.plugins
+
+settings
+
+    get settings(): joplin.settings
+
+views
+
+    get views(): joplin.views
+
+window
+
+    get window(): joplin.window
+
+workspace
+
+    get workspace(): joplin.workspace
+
+Methods
+require
+
+    require(_path: string): any
+
+    It is not possible to bundle native packages with a plugin, because they need to work cross-platforms. Instead access to certain useful native packages is provided using this function.
+
+    Currently these packages are available:
+        sqlite3
+        fs-extra
+
+    View the demo plugin
+
+    desktop
+    Parameters
+        _path: string
+
+shouldUseDarkColors
+
+    shouldUseDarkColors(): Promise<boolean>
+
+    Tells whether the current theme is a dark one or not.
+
+versionInfo
+
+    versionInfo(): Promise<VersionInfo>
+
+    joplin
+        clipboard
+        commands
+        contentScripts
+        data
+        imaging
+        interop
+        plugins
+        settings
+        views
+        window
+        workspace
+        require
+        shouldUseDarkColors
+        versionInfo
+

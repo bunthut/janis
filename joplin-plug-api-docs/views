@@ -1,0 +1,68 @@
+
+Search
+
+Joplin Plugin API Documentation
+All
+
+Inherited
+
+    joplin.views 
+
+joplin.views
+
+This namespace provides access to view-related services.
+Creating a view
+
+All view services provide a create() method which you would use to create the view object, whether it's a dialog, a toolbar button or a menu item. In some cases, the create() method will return a ViewHandle, which you would use to act on the view, for example to set certain properties or call some methods.
+The webviewApi object
+
+Within a view, you can use the global object webviewApi for various utility functions, such as sending messages or displaying context menu. Refer to WebviewApi for the full documentation.
+Index
+Accessors
+
+    dialogs
+    editors
+    menuItems
+    menus
+    noteList
+    panels
+    toolbarButtons
+
+Accessors
+dialogs
+
+    get dialogs(): joplin.views.dialogs
+
+editors
+
+    get editors(): joplin.views.editors
+
+menuItems
+
+    get menuItems(): joplin.views.menuItems
+
+menus
+
+    get menus(): joplin.views.menus
+
+noteList
+
+    get noteList(): joplin.views.noteList
+
+panels
+
+    get panels(): joplin.views.panels
+
+toolbarButtons
+
+    get toolbarButtons(): joplin.views.toolbarButtons
+
+    joplin.views
+        dialogs
+        editors
+        menuItems
+        menus
+        noteList
+        panels
+        toolbarButtons
+

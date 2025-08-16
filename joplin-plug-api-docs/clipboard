@@ -1,0 +1,83 @@
+
+Search
+
+Joplin Plugin API Documentation
+All
+
+Inherited
+
+    joplin.clipboard 
+
+joplin.clipboard
+Index
+Methods
+
+    availableFormats
+    readHtml
+    readImage
+    readText
+    writeHtml
+    writeImage
+    writeText
+
+Methods
+availableFormats
+
+    availableFormats(): Promise<string[]>
+
+    Returns the list available formats (mime types).
+
+    For example [ 'text/plain', 'text/html' ]
+
+readHtml
+
+    readHtml(): Promise<string>
+
+    desktop
+
+readImage
+
+    readImage(): Promise<string>
+
+    Returns the image in data URL format.
+
+    desktop
+
+readText
+
+    readText(): Promise<string>
+
+writeHtml
+
+    writeHtml(html: string): Promise<void>
+
+    desktop
+    Parameters
+        html: string
+
+writeImage
+
+    writeImage(dataUrl: string): Promise<void>
+
+    Takes an image in data URL format.
+
+    desktop
+    Parameters
+        dataUrl: string
+
+writeText
+
+    writeText(text: string): Promise<void>
+
+    Parameters
+        text: string
+
+    joplin.clipboard
+        availableFormats
+        readHtml
+        readImage
+        readText
+        writeHtml
+        writeImage
+        writeText
+

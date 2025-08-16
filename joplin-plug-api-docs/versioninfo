@@ -1,0 +1,35 @@
+
+Search
+
+Joplin Plugin API Documentation
+All
+
+Inherited
+
+    VersionInfo 
+
+VersionInfo
+Index
+Properties
+
+    platform
+    profileVersion
+    syncVersion
+    version
+
+Properties
+platform
+platform: "desktop" | "mobile"
+profileVersion
+profileVersion: number
+syncVersion
+syncVersion: number
+version
+version: string
+
+    VersionInfo
+        platform
+        profileVersion
+        syncVersion
+        version
+
