@@ -102,7 +102,7 @@ export class Parser {
         // There's a try catch block here because a user experienced an error
         // due to the following line. I've added a try catch block to log the
         // necessary info to find the root cause of the error in case it happens again.
-        // Reference -> https://github.com/joplin/plugin-templates/issues/6
+        // Reference -> https://github.com/joplin/janis/issues/6
         try {
             userResponse = dialogResponse.formData.variables;
         } catch (err) {

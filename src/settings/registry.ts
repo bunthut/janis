@@ -21,7 +21,7 @@ export class PluginSettingsRegistry {
     public static async registerSettings(): Promise<void> {
         // Register setting section
         await joplin.settings.registerSection("templatesPlugin", {
-            label: "Templates",
+            label: "Janis",
         });
 
         // Register all settings

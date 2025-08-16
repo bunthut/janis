@@ -1,10 +1,10 @@
 <h1 align="center">
-    Templates Plugin
+    Janis Plugin
     <br/>
     <center>
-        <img src="https://github.com/joplin/plugin-templates/actions/workflows/ci.yml/badge.svg">
-        <a href="https://npmjs.com/package/joplin-plugin-templates"><img src="https://badge.fury.io/js/joplin-plugin-templates.svg" alt="npm version"></a>
-        <img src="https://img.shields.io/badge/dynamic/json?color=brightgreen&label=downloads&query=%24.totalDownloads&url=https%3A%2F%2Fjoplin-plugin-downloads.vercel.app%2Fapi%3Fplugin%3Djoplin.plugin.templates">
+        <img src="https://github.com/joplin/janis/actions/workflows/ci.yml/badge.svg">
+        <a href="https://npmjs.com/package/joplin-plugin-janis"><img src="https://badge.fury.io/js/joplin-plugin-janis.svg" alt="npm version"></a>
+        <img src="https://img.shields.io/badge/dynamic/json?color=brightgreen&label=downloads&query=%24.totalDownloads&url=https%3A%2F%2Fjoplin-plugin-downloads.vercel.app%2Fapi%3Fplugin%3Djoplin.plugin.janis">
     </center>
 </h1>
 
@@ -16,7 +16,7 @@ This plugin allows you to create templates in Joplin and use them to create new 
 - [Importing Legacy Templates](#importing-legacy-templates)
 - [Importing Notebin Data](#importing-notebin-data)
 - [Importing Templates from Files](#importing-templates-from-files)
-- [Using the Template Plugin](#using-the-template-plugin)
+- [Using the Janis Plugin](#using-the-janis-plugin)
   - [Adding a new template](#adding-a-new-template)
   - [Using templates](#using-templates)
   - [File drop](#file-drop)
@@ -37,7 +37,7 @@ This plugin allows you to create templates in Joplin and use them to create new 
 ## Installing Plugin
 - Open Joplin
 - Go to Tools > Options > Plugins
-- Search for `Templates`
+- Search for `Janis`
 - Click Install plugin
 - Restart Joplin to enable the plugin
 
@@ -64,7 +64,7 @@ Once template file import is available, you will be able to bring existing templ
 - Choose the Markdown file containing your template.
 - The plugin will create a new template note from the selected file.
 
-## Using the Template Plugin
+## Using the Janis Plugin
 
 ### Adding a new template
 Create templates by creating a new note or to-do in any notebook that:
@@ -218,7 +218,7 @@ Attachment processing for dropped files uses optional libraries:
 The plugin works without them, but these enhancements will be skipped if the modules are not installed.
 
 ## Changelog
-See [CHANGELOG.md](https://github.com/joplin/plugin-templates/blob/master/CHANGELOG.md).
+See [CHANGELOG.md](https://github.com/joplin/janis/blob/master/CHANGELOG.md).
 
 ## Supporting
 You can support the development of this plugin through [PayPal](https://paypal.me/nishantwrp). Also, do consider supporting the development of the main Joplin app through the official [donate page](https://joplinapp.org/donate/).

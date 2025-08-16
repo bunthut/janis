@@ -94,7 +94,7 @@ export const importTemplateFromFile = async (): Promise<void> => {
     }
 };
 
-const documentationUrl = "https://github.com/joplin/plugin-templates#readme";
+const documentationUrl = "https://github.com/joplin/janis#readme";
 
 joplin.plugins.register({
     onStart: async function() {
