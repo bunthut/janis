@@ -106,14 +106,19 @@ joplin.plugins.register({
         const joplinGlobalApis = new NamedPromiseGroup();
 
         joplinGlobalApis.add("dialogViewHandle", joplin.views.dialogs.create("dialog"));
+        joplinGlobalApis.add("timelineViewHandle", joplin.views.dialogs.create("timeline"));
         joplinGlobalApis.add("userLocale", LocaleGlobalSetting.get());
         joplinGlobalApis.add("userDateFormat", DateFormatGlobalSetting.get());
         joplinGlobalApis.add("userTimeFormat", TimeFormatGlobalSetting.get());
         joplinGlobalApis.add("profileDir", ProfileDirGlobalSetting.get());
 
         const {
-            dialogViewHandle, userLocale, userDateFormat,
-            userTimeFormat, profileDir
+            dialogViewHandle,
+            timelineViewHandle,
+            userLocale,
+            userDateFormat,
+            userTimeFormat,
+            profileDir,
         } = await joplinGlobalApis.all();
 
         const dateAndTimeUtils = new DateAndTimeUtils(userLocale, userDateFormat, userTimeFormat);
@@ -333,11 +338,15 @@ joplin.plugins.register({
             label: "Show timeline",
             execute: async () => {
                 const response: { items: TimelineNote[] } = await joplin.data.get([
-                    "notes"
-                ], { fields: ["id", "title", "created_time"], order_by: "created_time", order_dir: "ASC" }) as { items: TimelineNote[] };
-                await setTimelineView(dialogViewHandle, response.items);
-                await joplin.views.dialogs.open(dialogViewHandle);
-            }
+                    "notes",
+                ], {
+                    fields: ["id", "title", "created_time"],
+                    order_by: "created_time",
+                    order_dir: "ASC",
+                }) as { items: TimelineNote[] };
+                await setTimelineView(timelineViewHandle, response.items);
+                await joplin.views.dialogs.open(timelineViewHandle);
+            },
         }));
 
         joplinCommands.add(joplin.commands.register({
