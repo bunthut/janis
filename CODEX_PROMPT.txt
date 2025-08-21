@@ -1,0 +1,120 @@
+MASTER PROMPT FÜR CODEX – TIMELINE AUS ALTER WEB-APP + NEUEM JOPLIN-PLUGIN
+
+Rolle und Ziel:
+Du agierst als Senior-Dev. Aufgabe:
+
+1. Die bestehende Web-App (Ordner: apps/timeline-web) so umbauen, dass sie Joplins Data API konsumiert.
+2. Das Joplin-Plugin (Ordner: plugins/timeline-panel) fertigstellen, das eine Timeline als Panel/WebView rendert und intern über joplin.data.* auf Daten zugreift.
+3. Eine gemeinsame Timeline-UI (horizontal oder vertikal, responsive) mit Filtern (Notebook/Folder, Tag(s), Zeitraum) bauen. Minimalinvasiv vorgehen, keine großen Refactorings ohne Not. Code bitte in TypeScript, wo möglich.
+
+Repos und Pfade:
+– Web-App: apps/timeline-web (Framework autodetect: React/Svelte/Vue; Vite/Rollup bevorzugt).
+– Plugin: plugins/timeline-panel (Joplin Plugin API, TypeScript).
+– Optionales Monorepo: Workspaces nutzen (Root package.json), plus packages/shared (Typen/Utils) und packages/ui (wiederverwendbare Timeline-Komponenten).
+
+Joplin Data API (REST, lokal, Clipper Service):
+– Basis-URL: http://127.0.0.1:41184
+– Auth: Token aus Joplin (Settings → Web Clipper). Der Clipper liefert entschlüsselte Daten, sobald Joplin entsperrt ist.
+– Relevante Endpoints:
+GET /notes?fields=id,title,body,user_created_time,updated_time,parent_id&order_by=user_created_time&order_dir=ASC
+GET /folders
+GET /tags
+GET /search (für komplexe Filter)
+– Sicherheit: Der Clipper läuft auf localhost. Wenn die Web-App im Browser läuft, löse CORS über einen kleinen lokalen Proxy (Node oder FastAPI) und injiziere das Token via ENV. Im Plugin-Panel sind keine CORS-Probleme zu erwarten, da joplin.data.* intern läuft. Très pratique.
+
+Funktionale Anforderungen (Akzeptanzkriterien):
+– Timeline zeigt Notes standardmäßig aufsteigend nach user_created_time; Fallback updated_time, wenn user_created_time fehlt.
+– Filterbar nach Notebook/Folder, Tag(s) und Zeitraum (startDate, endDate).
+– Live-Refresh: Polling alle 5–10 Sekunden in der Web-App oder Event-Hooks im Plugin.
+– Klick auf Timeline-Item öffnet die Note: im Plugin via joplin.commands.execute('openNote', noteId); in der Web-App via Callback/Link (z. B. deeplink joplin://note?id=… wenn vorhanden, sonst nur anzeigen).
+– Robust gegen leere Bodies und fehlende Zeiten. i18n de/en minimal (Labels).
+– Performant bis mindestens 5.000 Notes (virtuelles Scrolling bei Bedarf).
+
+Nicht-funktionale Anforderungen:
+– TypeScript, striktes Linting/Prettier, kleine pure Funktionen, klare Benennungen.
+– Keine Secrets hardcoden (Token via ENV oder Plugin-Config).
+– Saubere Fehlerbehandlung (sichtbare Toasts/Status), keine lauten Crashes.
+– Leichte UI ohne heavy UI-Kits; Barrierearmut (ARIA) berücksichtigen.
+
+Architektur:
+– Gemeinsame Typen in packages/shared/src/joplinTypes.ts (JoplinNote, JoplinFolder, JoplinTag).
+– Datenlayer Web-App: apps/timeline-web/src/lib/joplinClient.ts (REST-Calls).
+– Datenlayer Plugin: plugins/timeline-panel/src/joplinClient.ts (Wrapper um joplin.data.get/put).
+– UI Komponenten Timeline + Filter in packages/ui exportieren; sowohl im Plugin-Panel (WebView) als auch in der Web-App nutzen.
+– State einfach halten (Zustand oder kleiner Store).
+
+Konkrete Tasks:
+
+1. Monorepo/Workspaces einrichten (falls noch nicht vorhanden): Root package.json mit workspaces; Ordner packages/shared und packages/ui erstellen.
+2. Shared Types und Utils: joplinTypes.ts (Note, Folder, Tag), Zeit-Utils (epoch/ms ↔ ISO), Formatierer.
+3. Web-App Integration:
+   – joplinClient: Methoden fetchNotes(params, token), fetchFolders(token), fetchTags(token); optional search(query, token).
+   – Optionaler Proxy in apps/timeline-web/server: leitet /api/* nach http://127.0.0.1:41184/* und hängt das Token serverseitig an. ENV: JOPLIN_TOKEN.
+   – Timeline-UI: Items nach user_created_time sortieren, Marker für Tage/Wochen/Monate, hover-Details (Titel, Snippet, Tags).
+   – Filterleiste: Folder-Dropdown, Tag-Multiselect, Datumsbereich. Filterpersistenz in localStorage.
+   – Live-Refresh: Polling 5–10 s (konfigurierbar).
+4. Plugin-Panel:
+   – Beim Start ein Panel erstellen und anzeigen lassen (Kommando timeline.open).
+   – WebView HTML laden (entweder Bundled-JS deiner UI oder lightweight App). Kommunikation via panels.postMessage/onMessage.
+   – Datenzugriffe im Plugin über joplin.data.get([...], { fields, order_by, order_dir, … }).
+   – Event-Hooks verwenden, um bei Note-Änderungen das Panel zu aktualisieren (z. B. joplin.workspace.onNoteSelectionChange oder relevante Events).
+   – openNote-Command anbinden.
+5. Build- und Dev-Scripts:
+   – Root: scripts für build, dev, lint, typecheck.
+   – timeline-web: dev-Server starten; optional dev:server für Proxy.
+   – timeline-panel: build erzeugt .jpl oder Dev-Watcher.
+6. QA und Doku:
+   – README in beiden Projekten: Setup, Token setzen, Startbefehle, Troubleshooting (CORS, Token, Port).
+   – Edge Cases testen (keine Notizen, >10k Notizen, Notes ohne body, ohne Timestamps).
+
+Erwartete Ausgaben (Deliverables):
+
+1. Änderungsliste (Dateien/Ordner), inkl. neu erstellter packages/shared und packages/ui.
+2. Patches (vereinfachte Diffs) und vollständige neue Dateien.
+3. Aktualisierte package.json-Skripte in Root und Subprojekten.
+4. README mit „Run local“:
+   – Web-App:
+   Run: export JOPLIN_TOKEN=DEIN_TOKEN
+   Run: yarn workspace timeline-web dev
+   Optional Proxy:
+   Run: yarn workspace timeline-web dev:server
+   – Plugin:
+   Run: yarn workspace timeline-panel build
+   Hinweis: .jpl in Joplin installieren oder Dev-Watcher verwenden.
+5. Kurze Doku zu Sicherheit (Token), CORS-Pfad, Ports, Troubleshooting.
+
+Bevorzugte Bibliotheken und Tools:
+– HTTP: fetch oder axios.
+– Datums-Lib: dayjs.
+– State: Zustand (oder minimaler eigener Store).
+– Build: Vite bevorzugt.
+– UI: keine schweren Frameworks; einfache CSS-Utilities okay.
+
+Minimale Beispielzeilen (nur zur Orientierung, inline, keine Code-Blöcke):
+– CURL für Notes: curl "http://127.0.0.1:41184/notes?fields=id,title,user_created_time,updated_time,parent_id&order_by=user_created_time&order_dir=ASC&token=DEIN_TOKEN"
+– Fetch in Web-App (Pseudocode): const res = await fetch("http://127.0.0.1:41184/notes?...&token=" + token); const data = await res.json();
+– Plugin-Datenzugriff (Pseudocode): const notes = await joplin.data.get(["notes"], { fields: "id,title,user_created_time,updated_time,parent_id", order_by: "user_created_time", order_dir: "ASC" });
+– Note öffnen (Pseudocode): await joplin.commands.execute("openNote", noteId);
+
+Qualität:
+– Strikte Typen, keine globalen Singletons außer klaren Configs.
+– Kein Dead Code; klare, kleine Funktionen.
+– Commits bitte mit Präfixen: feat(web): …, feat(plugin): …, chore(shared): …, fix(ui): …
+
+Sicherheits- und Betriebsnotizen:
+– Token niemals in Client-Bundle schreiben; bei Browser-App via lokalen Proxy oder manuelle Eingabe im Dev-Modus.
+– Clipper muss in Joplin aktiviert sein; App muss entsperrt sein (E2EE bleibt clientseitig in Joplin).
+– Ports und CORS im README dokumentieren.
+
+Optionale Erweiterungen (wenn Zeit):
+– Virtualized List/Timeline für sehr viele Notizen.
+– Datums-Buckets (Tag, Woche, Monat) mit zoomable Timeline.
+– Export einer gefilterten Timeline als statische HTML/PDF (später).
+– Keyboard-Shortcuts (Navigieren in der Timeline).
+
+Arbeitsweise:
+– Minimalinvasiv starten (MVP in 1–2 Iterationen), dann iterativ verfeinern.
+– Vor größeren Umbauten im bestehenden Code zuerst prüfen, ob eine leichte Adapter-Schicht reicht. Erst refactor, wenn klarer Nutzen besteht. Danach weiter mergen. Voilà.
+
+Hinweis am Ende (Kultur):
+– Bitte kurze, präzise Commits, kleine PR-Schritte. Fragen bei Unklarheiten mit TODO-Kommentaren markieren. Merci.
